@@ -4,8 +4,9 @@
 
 package frc.robot;
 
-import frc.robot.Constants.DirverConstants;
-import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.Constants.OIConstants;
+import frc.team1699.subsystems.DriveSubsystem;
+import frc.team1699.subsystems.ShooterSubsystem;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 
@@ -13,10 +14,12 @@ public class RobotContainer {
   // The robot's subsystems and commands are defined here...
 
   private final CommandXboxController operatorController =
-      new CommandXboxController(DirverConstants.kOperatorControllerPort);
+      new CommandXboxController(OIConstants.kOperatorController);
 
   private final CommandXboxController driverController =
       new CommandXboxController(DirverConstants.kDriverControllerPort);
+  private final DriveSubsystem driveSubsystem = new DriveSubsystem();
+  private final ShooterSubsystem shooterSubsystem = new ShooterSubsystem();
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
@@ -25,6 +28,13 @@ public class RobotContainer {
   }
 
   private void configureBindings() {
+    operatorController.leftTrigger()
+      .whileTrue(shooterSubsystem.intake())
+      .onFalse(shooterSubsystem.stop());   
+
+    operatorController.rightTrigger()
+      .whileTrue(shooterSubsystem.shoot())
+      .onFalse(shooterSubsystem.stop());            
   }
 
   /**
