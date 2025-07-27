@@ -5,13 +5,13 @@
 package frc.robot;
 
 import frc.robot.Constants.OIConstants;
-import frc.team1699.subsystems.ShooterSubsystem;
+import frc.team1699.subsystems.PivotSubsystem;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 
 public class RobotContainer {
-    ShooterSubsystem shoot = new ShooterSubsystem();
+    PivotSubsystem pivot = new PivotSubsystem();
 
     CommandXboxController driverController = new CommandXboxController(OIConstants.kDriverControllerPort);
     CommandXboxController operatorController = new CommandXboxController(OIConstants.kOperatorControllerPort);
@@ -23,12 +23,8 @@ public class RobotContainer {
 
 
     private void configureButtonBindings() {
-        operatorController.leftTrigger()
-            .whileTrue(shoot.intake())
-            .onFalse(shoot.stop());
-         operatorController.leftBumper()
-            .whileTrue(shoot.outaketake())
-            .onFalse(shoot.stop());
+        operatorController.povUp()
+            .whileTrue(pivot.setRaw(30));
     }
 
     public Command getAutonomousCommand() {
