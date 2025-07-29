@@ -6,6 +6,7 @@ package frc.robot;
 
 import frc.robot.Constants.OIConstants;
 import frc.team1699.subsystems.PivotSubsystem;
+import frc.team1699.subsystems.PivotSubsystem.PivotPositions;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
@@ -24,7 +25,10 @@ public class RobotContainer {
 
     private void configureButtonBindings() {
         operatorController.povUp()
-            .whileTrue(pivot.setRaw(30));
+            .onTrue(
+                pivot.setPosition(PivotPositions.STORED)
+                    .andThen(pivot.waitUntilTolerance()
+            ));
     }
 
     public Command getAutonomousCommand() {

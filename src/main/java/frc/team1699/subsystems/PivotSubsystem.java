@@ -3,9 +3,9 @@ package frc.team1699.subsystems;
 import java.util.function.BooleanSupplier;
 
 import com.revrobotics.RelativeEncoder;
+import com.revrobotics.spark.SparkBase;
 import com.revrobotics.spark.SparkClosedLoopController;
 import com.revrobotics.spark.SparkMax;
-import com.revrobotics.spark.SparkBase.ControlType;
 import com.revrobotics.spark.SparkBase.PersistMode;
 import com.revrobotics.spark.SparkBase.ResetMode;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
@@ -24,13 +24,13 @@ public class PivotSubsystem extends SubsystemBase {
     private SparkClosedLoopController pidController;
 
     public PivotSubsystem() {
-        currentSetpoint = PivotPositions.STORED;
-
         motor = new SparkMax(PivotConstants.kPivotMotorID,MotorType.kBrushless);
 
         encoder = motor.getAlternateEncoder();
         pidController = motor.getClosedLoopController();
         motor.configureAsync(PivotConfigs.motorConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+
+        setPosition(PivotPositions.STORED);
     }
 
     public Command setRaw(double heightValue) {
@@ -42,7 +42,7 @@ public class PivotSubsystem extends SubsystemBase {
     public Command setPosition(PivotPositions target) {
         return runOnce(() -> {
             currentSetpoint = target;
-            pidController.setReference(target.value, ControlType.kMAXMotionPositionControl);
+            pidController.setReference(target.value, SparkBase.ControlType.kMAXMotionPositionControl);
         });
     }
 

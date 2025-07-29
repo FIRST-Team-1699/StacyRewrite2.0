@@ -23,7 +23,7 @@ public final class Constants {
     public static final double kStoredPoint = 10;
     public static final double kAmpPoint = 105;
 
-    public static final double kTolerance = 3;
+    public static final double kTolerance = .5;
 
     // Config Constants
     // TODO: TUNE
@@ -45,5 +45,8 @@ public final class Constants {
 
     public static final double kConversionFactor = 360;
     public static final double kOffset = 0;
+
+    public static final double kPivotVelocity= .10;
+    public static final double kPivotAcceleration = .05;
   }
 }
