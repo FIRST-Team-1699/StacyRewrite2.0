@@ -20,13 +20,14 @@ public final class Configs {
                 .feedbackSensor(FeedbackSensor.kAlternateOrExternalEncoder)
                 .pidf(PivotConstants.kP, PivotConstants.kI, PivotConstants.kD, PivotConstants.kFF, ClosedLoopSlot.kSlot0)
                 .outputRange(PivotConstants.kReverseLimit, PivotConstants.kForwardLimit, ClosedLoopSlot.kSlot0);
-            motorConfig.closedLoop.maxMotion
-                .maxVelocity(PivotConstants.kPivotVelocity)
-                .maxAcceleration(PivotConstants.kPivotAcceleration)
-                .allowedClosedLoopError(PivotConstants.kTolerance);
+            // motorConfig.closedLoop.maxMotion
+            //     .maxVelocity(PivotConstants.kPivotVelocity)
+            //     .maxAcceleration(PivotConstants.kPivotAcceleration)
+            //     .allowedClosedLoopError(PivotConstants.kTolerance);
             motorConfig.alternateEncoder
                 .positionConversionFactor(PivotConstants.kConversionFactor)
                 .velocityConversionFactor(PivotConstants.kConversionFactor) 
+                .countsPerRevolution(8192)
                 .inverted(PivotConstants.kEncoderInverted);
             motorConfig.softLimit
                 .forwardSoftLimit(PivotConstants.kMaximumRotation)

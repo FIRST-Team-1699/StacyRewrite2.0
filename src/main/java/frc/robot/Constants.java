@@ -21,24 +21,24 @@ public final class Constants {
     // Position (enum) Constants
     // TODO: TUNE
     public static final double kStoredPoint = 10;
-    public static final double kAmpPoint = 105;
+    public static final double kAmpPoint = 65;
 
-    public static final double kTolerance = .5;
+    public static final double kTolerance = 1.0;
 
     // Config Constants
     // TODO: TUNE
-    public static final double kForwardLimit = .10;
-    public static final double kReverseLimit = -.10;
+    public static final double kForwardLimit = 0.8;
+    public static final double kReverseLimit = -0.8;
 
-    public static final double kMaximumRotation = 100;
+    public static final double kMaximumRotation = 66;
     public static final double kMinimumRotation = 0;
 
-    public static final boolean kMotorInverted = false;
-    public static final boolean kEncoderInverted = false;
+    public static final boolean kMotorInverted = true;
+    public static final boolean kEncoderInverted = true;
 
     public static final IdleMode kIdleMode = IdleMode.kBrake;
 
-    public static final double kP = 0;
+    public static final double kP = 0.01;
     public static final double kI = 0;
     public static final double kD = 0;
     public static final double kFF = 0;
@@ -46,7 +46,7 @@ public final class Constants {
     public static final double kConversionFactor = 360;
     public static final double kOffset = 0;
 
-    public static final double kPivotVelocity= .10;
-    public static final double kPivotAcceleration = .05;
+    // public static final double kPivotVelocity= .25;
+    // public static final double kPivotAcceleration = .05;
   }
 }

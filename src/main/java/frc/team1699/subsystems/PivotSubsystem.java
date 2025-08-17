@@ -3,6 +3,7 @@ package frc.team1699.subsystems;
 import java.util.function.BooleanSupplier;
 
 import com.revrobotics.RelativeEncoder;
+import com.revrobotics.spark.ClosedLoopSlot;
 import com.revrobotics.spark.SparkBase;
 import com.revrobotics.spark.SparkClosedLoopController;
 import com.revrobotics.spark.SparkMax;
@@ -17,7 +18,7 @@ import frc.robot.Configs.PivotConfigs;
 import frc.robot.Constants.PivotConstants;
 
 public class PivotSubsystem extends SubsystemBase {
-    private static PivotPositions currentSetpoint;
+    private static PivotPositions currentSetpoint=PivotPositions.STORED;
 
     private SparkMax motor;
     private RelativeEncoder encoder;
@@ -42,7 +43,7 @@ public class PivotSubsystem extends SubsystemBase {
     public Command setPosition(PivotPositions target) {
         return runOnce(() -> {
             currentSetpoint = target;
-            pidController.setReference(target.value, SparkBase.ControlType.kMAXMotionPositionControl);
+            pidController.setReference(currentSetpoint.value, SparkBase.ControlType.kPosition, ClosedLoopSlot.kSlot0);
         });
     }
 
@@ -52,14 +53,17 @@ public class PivotSubsystem extends SubsystemBase {
 
     public BooleanSupplier isInTolerance() {
         return (() -> {
-            return Math.abs(currentSetpoint.value) < PivotConstants.kTolerance;
+            return Math.abs(currentSetpoint.value-encoder.getPosition()) < PivotConstants.kTolerance;
         });
     }
 
     @Override
     public void periodic() {
-        System.out.println("Pivot Position: " + encoder.getPosition());
-        System.out.println("Is in tolerance: " + isInTolerance().getAsBoolean());
+        try {
+            System.out.println("Pivot Position: " + encoder.getPosition());
+            System.out.println("Is in tolerance: " + isInTolerance().getAsBoolean());
+        } catch (Exception e) {
+        }
     }
 
     // TODO: TEST BEFORE USING POSITIONS

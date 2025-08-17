@@ -23,12 +23,32 @@ public class RobotContainer {
     }
 
 
+
     private void configureButtonBindings() {
         operatorController.povUp()
+            .whileTrue(
+                pivot.setRaw(.10)
+            )
+            .onFalse(
+                pivot.setRaw(0)
+            );
+        operatorController.povDown()
+            .whileTrue(
+                pivot.setRaw(-.10)
+            )
+            .onFalse(
+                pivot.setRaw(0)
+            );
+        operatorController.povLeft()
             .onTrue(
                 pivot.setPosition(PivotPositions.STORED)
-                    .andThen(pivot.waitUntilTolerance()
-            ));
+                    .andThen(pivot.waitUntilTolerance())
+            );
+        operatorController.povRight()
+            .onTrue(
+                pivot.setPosition(PivotPositions.AMP)
+                    .andThen(pivot.waitUntilTolerance())
+            );
     }
 
     public Command getAutonomousCommand() {
