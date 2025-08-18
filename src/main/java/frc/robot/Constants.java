@@ -23,7 +23,7 @@ public final class Constants {
     public static final double kStoredPoint = 10;
     public static final double kAmpPoint = 65;
 
-    public static final double kTolerance = 1.0;
+    public static final double kTolerance = 0.5;
 
     // Config Constants
     // TODO: TUNE
@@ -38,9 +38,9 @@ public final class Constants {
 
     public static final IdleMode kIdleMode = IdleMode.kBrake;
 
-    public static final double kP = 0.01;
+    public static final double kP = 0.025;
     public static final double kI = 0;
-    public static final double kD = 0;
+    public static final double kD = 0.016;
     public static final double kFF = 0;
 
     public static final double kConversionFactor = 360;
