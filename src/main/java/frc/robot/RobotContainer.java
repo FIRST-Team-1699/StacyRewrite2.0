@@ -19,7 +19,6 @@ public class RobotContainer {
 
     public RobotContainer() {
         configureButtonBindings();
-
     }
 
 
@@ -55,5 +54,9 @@ public class RobotContainer {
         return new RunCommand(() -> {
             System.out.println("Hello World");
         });
+    }
+
+    public void pivotToStored() {
+        pivot.setPosition(PivotPositions.STORED).schedule();
     }
 }
