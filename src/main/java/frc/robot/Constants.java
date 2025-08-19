@@ -16,8 +16,25 @@ public final class Constants {
     
   }
 
-  public static class ShooterConstants {
+  public static final class ShooterConstants {
+    // Subsystem Constants
+    public static final int kTopMotorID = 33;
+    public static final int kBottomMotorID = 34;
 
+    public static final double kIntakeSpeed = .15;
+    public static final double kOutakeSpeed = -.25;
+    public static final double kShootSpeed = -.75;
+
+    // Config Constants
+    public static final double kForwardLimit = .80;
+    public static final double kReverseLimit = -.80;
+  }
+
+  public static final class IndexerConstants {
+    public static final int motorID=16;
+
+    public static final double kIntakeSpeed = .25;
+    public static final double kOutakeSpeed = -.25;
   }
 
   public static final class PivotConstants {

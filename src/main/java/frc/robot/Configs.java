@@ -1,10 +1,15 @@
 package frc.robot;
 
+import com.ctre.phoenix6.configs.MotorOutputConfigs;
+import com.ctre.phoenix6.signals.InvertedValue;
+import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.revrobotics.spark.ClosedLoopSlot;
 import com.revrobotics.spark.config.ClosedLoopConfig.FeedbackSensor;
+import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import com.revrobotics.spark.config.SparkMaxConfig;
 
 import frc.robot.Constants.PivotConstants;
+import frc.robot.Constants.ShooterConstants;
 
 
 
@@ -30,6 +35,27 @@ public final class Configs {
                 .forwardSoftLimitEnabled(true)
                 .reverseSoftLimit(PivotConstants.kMinimumRotation)
                 .reverseSoftLimitEnabled(true);
+        }
+    }
+
+    public static final class ShooterConfigs {
+        public static final MotorOutputConfigs leadConfig = new MotorOutputConfigs();
+
+        static {
+        leadConfig.Inverted = InvertedValue.Clockwise_Positive;
+        leadConfig.PeakForwardDutyCycle = ShooterConstants.kForwardLimit;
+        leadConfig.PeakReverseDutyCycle = ShooterConstants.kReverseLimit;
+        leadConfig.NeutralMode = NeutralModeValue.Coast;
+        }
+    }
+
+    public static final class IndexerConfigs {
+        public static final SparkMaxConfig motorConfig = new SparkMaxConfig();
+
+        static {
+        motorConfig
+            .inverted(true)
+            .idleMode(IdleMode.kCoast);
         }
     }
 }
