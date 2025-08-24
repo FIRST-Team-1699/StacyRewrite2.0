@@ -4,6 +4,16 @@
 
 package frc.robot;
 
+import frc.robot.Constants.OIConstants;
+import frc.team1699.subsystems.SwerveSubsystem;
+import frc.team1699.subsystems.PivotSubsystem;
+import frc.team1699.subsystems.PivotSubsystem.PivotPositions;
+import swervelib.SwerveInputStream;
+
+import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -14,12 +24,6 @@ import edu.wpi.first.math.trajectory.ExponentialProfile.Constraints;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj.RobotBase;
-import frc.robot.Constants.OIConstants;
-import frc.team1699.subsystems.SwerveSubsystem;
-import swervelib.SwerveInputStream;
-import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.Commands;
-import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 
 import java.io.File;
 
@@ -31,6 +35,10 @@ public class RobotContainer {
 
     private final SwerveSubsystem drivetrain = new SwerveSubsystem(new File(Filesystem.getDeployDirectory(),
         "swerve"));
+
+    private PivotSubsystem pivot = new PivotSubsystem();
+    private IndexerSubsystem indexer = new IndexerSubsystem();
+    private ShooterSubsystem shoot = new ShooterSubsystem();
 
     SwerveInputStream driveAngularVelocity = SwerveInputStream
         .of(drivetrain.getSwerveDrive(),
@@ -163,11 +171,39 @@ public class RobotContainer {
             driverController.leftBumper().whileTrue(Commands.runOnce(drivetrain::lock, drivetrain).repeatedly());
             driverController.rightBumper().onTrue(Commands.none());
         }
-    }
 
-    public Command getAutonomousCommand() {
-        // An example command will be run in autonomous
-        return drivetrain.getAutonomousCommand("New Auto");
+    operatorController.povDown()
+        .onTrue(
+            pivot.setPosition(PivotPositions.STORED)
+            .andThen(pivot.waitUntilTolerance())
+        );
+
+    operatorController.povLeft()
+        .onTrue(
+            pivot.setPosition(PivotPositions.INTAKE)
+            .andThen(pivot.waitUntilTolerance())
+        );
+
+    operatorController.povUp()
+        .onTrue(
+            pivot.setPosition(PivotPositions.AMP)
+            .andThen(pivot.waitUntilTolerance())
+        );
+    operatorController.leftTrigger()
+        .whileTrue(new IntakeCommand(shoot, indexer));
+            
+    operatorController.leftBumper()
+        .whileTrue(new ShootCommand(shoot, indexer));
+  }
+
+  public Command getAutonomousCommand() {
+    return new RunCommand(() -> {
+      System.out.println("Running auto");
+    });
+  }
+
+    public void pivotToStored() {
+        pivot.setPosition(PivotPositions.STORED).schedule();
     }
 
     public void setMotorBrake(boolean brake) {
