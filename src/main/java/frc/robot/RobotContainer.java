@@ -30,7 +30,7 @@ public class RobotContainer {
     private final CommandXboxController driverController = new CommandXboxController(OIConstants.kDriverControllerPort);
 
     private final SwerveSubsystem drivetrain = new SwerveSubsystem(new File(Filesystem.getDeployDirectory(),
-        "swerve/neo"));
+        "swerve"));
 
     SwerveInputStream driveAngularVelocity = SwerveInputStream
         .of(drivetrain.getSwerveDrive(),
