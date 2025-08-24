@@ -1,18 +1,13 @@
 {
-    "location": {
-      "front": 12.375,
-      "left": 12.375
-    },
-    "absoluteEncoderOffset": 255,
-    "absoluteEncoderInverted": false,
+    "absoluteEncoderInverted": false, // NOT IN YAGSL 2025 Doucmentation
     "drive": {
       "type": "sparkmax",
-      "id": 27,
+      "id": 21,
       "canbus": null
     },
     "angle": {
       "type": "sparkmax",
-      "id": 28,
+      "id": 24,
       "canbus": null
     },
     "conversionFactor": {
@@ -21,11 +16,16 @@
     },
     "encoder": {
       "type": "thrifty",
-      "id": 0,
+      "id": 1,
       "canbus": null
     },
     "inverted": {
       "drive": true,
       "angle": true
+    },
+    "absoluteEncoderOffset": 16,
+    "location": {
+      "front": 12.375,
+      "left": -12.375
     }
 }

@@ -1,0 +1,40 @@
+// YAGSL CHANGED THIS AS OF 2025
+// {
+//   "optimalVoltage": 12, 
+//   "wheelGripCoefficientOfFriction": 1.19,
+//   "currentLimit": {
+//     "drive": 40,
+//     "angle": 20
+//   },
+//   "conversionFactor": {
+//     "angle": 16.8,
+//     "drive": 0.047286787200699704
+//   },
+//   "rampRate": {
+//     "drive": 0.25,
+//     "angle": 0.25
+//   }
+// }
+{
+  "conversionFactors": {
+    "angle": {
+      "gearRatio": 16.8, // DONE
+      "factor": 0 // DONE
+    },
+    "drive": {
+      "gearRatio": 8.14, // TEMP NUMBERS
+      "diameter": 4, // TEMP NUMBERS
+      "factor": 0 // DONE
+    }
+  },
+  "currentLimit": {
+    "drive": 40, // DONE
+    "angle": 20 // DONE
+  },
+  "rampRate": {
+    "drive": 0.25, // DONE
+    "angle": 0.25 // DONE
+  },
+  "wheelGripCoefficientOfFriction": 1.19, // DONE
+  "optimalVoltage": 12 // DONE
+}

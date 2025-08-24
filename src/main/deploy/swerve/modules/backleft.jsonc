@@ -1,10 +1,5 @@
 {
-    "location": {
-      "front": -12.375,
-      "left": 12.375
-    },
-    "absoluteEncoderOffset": 187,
-    "absoluteEncoderInverted": false,
+    "absoluteEncoderInverted": false, // NOT IN YAGSL 2025 Doucmentation
     "drive": {
       "type": "sparkmax",
       "id": 25,
@@ -27,5 +22,10 @@
     "inverted": {
       "drive": true,
       "angle": true
+    },
+    "absoluteEncoderOffset": 187,
+    "location": {
+      "front": -12.375,
+      "left": 12.375
     }
 }
