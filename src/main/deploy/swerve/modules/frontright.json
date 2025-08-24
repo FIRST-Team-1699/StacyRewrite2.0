@@ -1,18 +1,14 @@
 {
-    "absoluteEncoderInverted": false, // NOT IN YAGSL 2025 Doucmentation
+    "absoluteEncoderInverted": false,
     "drive": {
-      "type": "sparkmax",
+      "type": "sparkmax_neo",
       "id": 21,
       "canbus": null
     },
     "angle": {
-      "type": "sparkmax",
+      "type": "sparkmax_neo",
       "id": 24,
       "canbus": null
-    },
-    "conversionFactor": {
-      "angle": 16.8,
-      "drive": 0.047286787200699704
     },
     "encoder": {
       "type": "thrifty",
