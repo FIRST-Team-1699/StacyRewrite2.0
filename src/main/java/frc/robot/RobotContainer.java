@@ -7,6 +7,10 @@ package frc.robot;
 import frc.robot.Constants.OIConstants;
 import frc.team1699.subsystems.SwerveSubsystem;
 import frc.team1699.subsystems.PivotSubsystem;
+import frc.team1699.subsystems.IndexerSubsystem;
+import frc.team1699.subsystems.ShooterSubsystem;
+import frc.team1699.commands.IntakeCommand;
+import frc.team1699.commands.ShootCommand;
 import frc.team1699.subsystems.PivotSubsystem.PivotPositions;
 import swervelib.SwerveInputStream;
 
@@ -32,6 +36,7 @@ import com.pathplanner.lib.auto.NamedCommands;
 public class RobotContainer {
 
     private final CommandXboxController driverController = new CommandXboxController(OIConstants.kDriverControllerPort);
+    private final CommandXboxController operatorController = new CommandXboxController(OIConstants.kOperatorControllerPort);
 
     private final SwerveSubsystem drivetrain = new SwerveSubsystem(new File(Filesystem.getDeployDirectory(),
         "swerve"));

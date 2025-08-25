@@ -57,14 +57,14 @@ public class PivotSubsystem extends SubsystemBase {
         });
     }
 
-    @Override
-    public void periodic() {
-        try {
-            System.out.println("Pivot Position: " + encoder.getPosition());
-            System.out.println("Is in tolerance: " + isInTolerance().getAsBoolean());
-        } catch (Exception e) {
-        }
-    }
+    // @Override
+    // public void periodic() {
+    //     try {
+    //         System.out.println("Pivot Position: " + encoder.getPosition());
+    //         System.out.println("Is in tolerance: " + isInTolerance().getAsBoolean());
+    //     } catch (Exception e) {
+    //     }
+    // }
 
     // TODO: TEST BEFORE USING POSITIONS
     public enum PivotPositions {
