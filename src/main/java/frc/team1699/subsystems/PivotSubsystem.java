@@ -34,9 +34,9 @@ public class PivotSubsystem extends SubsystemBase {
         setPosition(PivotPositions.STORED);
     }
 
-    public Command setRaw(double heightValue) {
+    public Command setRaw(double percentage) {
         return runOnce(() -> {
-            motor.set(heightValue);
+            motor.set(percentage);
         });
     }
 
@@ -57,14 +57,13 @@ public class PivotSubsystem extends SubsystemBase {
         });
     }
 
-    // @Override
-    // public void periodic() {
-    //     try {
-    //         System.out.println("Pivot Position: " + encoder.getPosition());
-    //         System.out.println("Is in tolerance: " + isInTolerance().getAsBoolean());
-    //     } catch (Exception e) {
-    //     }
-    // }
+    @Override
+    public void periodic() {
+        try {
+            System.out.println("Pivot Position: " + encoder.getPosition());
+        } catch (Exception e) {
+        }
+    }
 
     // TODO: TEST BEFORE USING POSITIONS
     public enum PivotPositions {

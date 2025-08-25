@@ -10,6 +10,7 @@ import frc.team1699.subsystems.PivotSubsystem;
 import frc.team1699.subsystems.IndexerSubsystem;
 import frc.team1699.subsystems.ShooterSubsystem;
 import frc.team1699.commands.IntakeCommand;
+import frc.team1699.commands.PivotToTagCommand;
 import frc.team1699.commands.ShootCommand;
 import frc.team1699.subsystems.PivotSubsystem.PivotPositions;
 import swervelib.SwerveInputStream;
@@ -177,23 +178,43 @@ public class RobotContainer {
             driverController.rightBumper().onTrue(Commands.none());
         }
 
-    operatorController.povDown()
-        .onTrue(
-            pivot.setPosition(PivotPositions.STORED)
-            .andThen(pivot.waitUntilTolerance())
-        );
-
     operatorController.povLeft()
         .onTrue(
             pivot.setPosition(PivotPositions.INTAKE)
             .andThen(pivot.waitUntilTolerance())
         );
 
+    // operatorController.povUp()
+    //     .onTrue(
+    //         pivot.setPosition(PivotPositions.AMP)
+    //         .andThen(pivot.waitUntilTolerance())
+    //     );
+
+    // operatorController.povDown()
+    //     .onTrue(
+    //         pivot.setPosition(PivotPositions.STORED)
+    //         .andThen(pivot.waitUntilTolerance())
+    //     );
+
     operatorController.povUp()
         .onTrue(
-            pivot.setPosition(PivotPositions.AMP)
-            .andThen(pivot.waitUntilTolerance())
+            pivot.setRaw(.5)
+        )
+        .onFalse(
+            pivot.setRaw(0)
         );
+
+    operatorController.povDown()
+        .onTrue(
+            pivot.setRaw(-.5)
+        )
+        .onFalse(
+            pivot.setRaw(0)
+        );
+    
+    operatorController.start()
+        .onTrue(new PivotToTagCommand(pivot));
+
     operatorController.leftTrigger()
         .whileTrue(new IntakeCommand(shoot, indexer));
             

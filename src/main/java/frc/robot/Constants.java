@@ -7,6 +7,7 @@ package frc.robot;
 import com.pathplanner.lib.config.PIDConstants;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 
+import edu.wpi.first.math.interpolation.InterpolatingDoubleTreeMap;
 import edu.wpi.first.math.util.Units;
 
 public final class Constants {
@@ -89,7 +90,17 @@ public final class Constants {
     public static final double kOffset = 0;
   }
 
-  public static class LimelightHelperConstants {
-
+  public static class LimelightConstants {
+    public static final InterpolatingDoubleTreeMap pivotToTag = new InterpolatingDoubleTreeMap();
+    static {
+      // KEY = DISTANCE FROM TAG TO BOT
+      // VALUE = ANGLE OF PIVOT
+      pivotToTag.put(null, null);
+      pivotToTag.put(null, null);
+      pivotToTag.put(null, null);
+      pivotToTag.put(null, null);
+      pivotToTag.put(null, null);
+      pivotToTag.put(null, null);
+    }
   }
 }
