@@ -11,6 +11,9 @@ import com.revrobotics.spark.SparkBase.PersistMode;
 import com.revrobotics.spark.SparkBase.ResetMode;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.trajectory.TrapezoidProfile;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
@@ -23,6 +26,10 @@ public class PivotSubsystem extends SubsystemBase {
     private SparkMax motor;
     private RelativeEncoder encoder;
     private SparkClosedLoopController pidController;
+    private Timer poseTimer;
+
+    private double initalVelocity;
+    private double initalPosition;
 
     public PivotSubsystem() {
         motor = new SparkMax(PivotConstants.kPivotMotorID,MotorType.kBrushless);
@@ -40,10 +47,31 @@ public class PivotSubsystem extends SubsystemBase {
         });
     }
 
+    /**Sets target position. Uses target position to set PID value.
+     * @param PivotPositions target: target position
+     * @return Command: command factory
+     */
     public Command setPosition(PivotPositions target) {
         return runOnce(() -> {
             currentSetpoint = target;
-            pidController.setReference(currentSetpoint.value, SparkBase.ControlType.kPosition, ClosedLoopSlot.kSlot0);
+
+            initalPosition = encoder.getPosition();
+            initalVelocity = encoder.getVelocity();
+
+            poseTimer.reset();
+            poseTimer.start();
+
+            setPID();
+        });
+    }
+
+    private Runnable setPID() {
+        return (() -> {
+            TrapezoidProfile.State setpoint = PivotConstants.profile.calculate(poseTimer.get() + 0.02, new TrapezoidProfile.State(initalPosition, initalVelocity), new TrapezoidProfile.State(currentSetpoint.value, 0));
+
+            pidController.setReference(setpoint.position, SparkBase.ControlType.kPosition, ClosedLoopSlot.kSlot0, PivotConstants.feedforward.calculate(Rotation2d.fromDegrees(setpoint.position).getRadians(), Rotation2d.fromDegrees(setpoint.velocity).getRadians()));
+            
+            // pidController.setReference(currentSetpoint.value, SparkBase.ControlType.kPosition, ClosedLoopSlot.kSlot0);
         });
     }
 

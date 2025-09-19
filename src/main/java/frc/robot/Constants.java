@@ -7,6 +7,8 @@ package frc.robot;
 import com.pathplanner.lib.config.PIDConstants;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 
+import edu.wpi.first.math.controller.ArmFeedforward;
+import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.util.Units;
 
 public final class Constants {
@@ -87,6 +89,10 @@ public final class Constants {
 
     public static final double kConversionFactor = 360;
     public static final double kOffset = 0;
+
+    // TRAPIZOID PROFILE STUFF
+    public static final TrapezoidProfile profile = new TrapezoidProfile(new TrapezoidProfile.Constraints(5, 10));
+    public static final ArmFeedforward feedforward = new ArmFeedforward(0, 0.523, 1.3);
   }
 
   public static class LimelightHelperConstants {
