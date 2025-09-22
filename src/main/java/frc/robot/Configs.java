@@ -8,6 +8,7 @@ import com.revrobotics.spark.config.ClosedLoopConfig.FeedbackSensor;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import com.revrobotics.spark.config.SparkMaxConfig;
 
+import frc.robot.Constants.IntakeConstants;
 import frc.robot.Constants.PivotConstants;
 import frc.robot.Constants.ShooterConstants;
 
@@ -46,10 +47,10 @@ public final class Configs {
         public static final MotorOutputConfigs leadConfig = new MotorOutputConfigs();
 
         static {
-        leadConfig.Inverted = InvertedValue.Clockwise_Positive;
-        leadConfig.PeakForwardDutyCycle = ShooterConstants.kForwardLimit;
-        leadConfig.PeakReverseDutyCycle = ShooterConstants.kReverseLimit;
-        leadConfig.NeutralMode = NeutralModeValue.Coast;
+            leadConfig.Inverted = InvertedValue.Clockwise_Positive;
+            leadConfig.PeakForwardDutyCycle = ShooterConstants.kForwardLimit;
+            leadConfig.PeakReverseDutyCycle = ShooterConstants.kReverseLimit;
+            leadConfig.NeutralMode = NeutralModeValue.Coast;
         }
     }
 
@@ -57,9 +58,24 @@ public final class Configs {
         public static final SparkMaxConfig motorConfig = new SparkMaxConfig();
 
         static {
-        motorConfig
-            .inverted(true)
-            .idleMode(IdleMode.kCoast);
+            motorConfig
+                .inverted(true)
+                .idleMode(IdleMode.kCoast);
+        }
+    }
+
+    public static final class IntakeConfigs {
+        public static final SparkMaxConfig leadConfig = new SparkMaxConfig();
+        public static final SparkMaxConfig followConfig = new SparkMaxConfig();
+
+        static {
+            leadConfig
+                .inverted(true)
+                .idleMode(IdleMode.kCoast);
+
+            followConfig
+                .apply(leadConfig)
+                .follow(IntakeConstants.kTopMotorID,false);
         }
     }
 }

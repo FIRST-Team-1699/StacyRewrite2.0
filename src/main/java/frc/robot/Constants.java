@@ -48,6 +48,20 @@ public final class Constants {
     public static final double kReverseLimit = -.80;
   }
 
+  public static final class IntakeConstants {
+    // Subsystem Constants
+    public static final int kTopMotorID = 31;
+    public static final int kBottomMotorID = 32;
+
+    public static final double kIntakeSpeed = .15;
+    public static final double kOutakeSpeed = -.25;
+
+    // Config Constants
+    public static final double kForwardLimit = .80;
+    public static final double kReverseLimit = -.80;
+  }
+
+
   public static final class IndexerConstants {
     public static final int motorID=16;
 

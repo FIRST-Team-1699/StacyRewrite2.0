@@ -8,7 +8,10 @@ import frc.robot.Constants.OIConstants;
 import frc.team1699.subsystems.SwerveSubsystem;
 import frc.team1699.subsystems.PivotSubsystem;
 import frc.team1699.subsystems.IndexerSubsystem;
+import frc.team1699.subsystems.IntakeSubsystem;
 import frc.team1699.subsystems.ShooterSubsystem;
+import frc.team1699.commands.GroundIntakeCommand;
+import frc.team1699.commands.GroundOutakeCommand;
 import frc.team1699.commands.IntakeCommand;
 import frc.team1699.commands.ShootCommand;
 import frc.team1699.subsystems.PivotSubsystem.PivotPositions;
@@ -24,7 +27,6 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.util.Units;
-import edu.wpi.first.math.trajectory.ExponentialProfile.Constraints;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj.RobotBase;
@@ -44,6 +46,7 @@ public class RobotContainer {
     private PivotSubsystem pivot = new PivotSubsystem();
     private IndexerSubsystem indexer = new IndexerSubsystem();
     private ShooterSubsystem shoot = new ShooterSubsystem();
+    private IntakeSubsystem intake = new IntakeSubsystem();
 
     SwerveInputStream driveAngularVelocity = SwerveInputStream
         .of(drivetrain.getSwerveDrive(),
@@ -199,6 +202,12 @@ public class RobotContainer {
             
     operatorController.leftBumper()
         .whileTrue(new ShootCommand(shoot, indexer));
+
+    operatorController.rightTrigger()
+        .whileTrue(new GroundIntakeCommand(intake, indexer));
+
+    operatorController.rightBumper()
+        .whileTrue(new GroundOutakeCommand(intake, indexer));
   }
 
   public Command getAutonomousCommand() {
