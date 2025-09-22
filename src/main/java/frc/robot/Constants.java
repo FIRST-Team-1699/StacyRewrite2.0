@@ -92,7 +92,7 @@ public final class Constants {
 
     // TRAPIZOID PROFILE STUFF
     public static final TrapezoidProfile profile = new TrapezoidProfile(new TrapezoidProfile.Constraints(5, 10));
-    public static final ArmFeedforward feedforward = new ArmFeedforward(0, 0.523, 1.3);
+    public static final ArmFeedforward feedforward = new ArmFeedforward(0, 0.523, 2.6);
   }
 
   public static class LimelightHelperConstants {

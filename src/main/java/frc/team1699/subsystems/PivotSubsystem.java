@@ -21,7 +21,7 @@ import frc.robot.Configs.PivotConfigs;
 import frc.robot.Constants.PivotConstants;
 
 public class PivotSubsystem extends SubsystemBase {
-    private static PivotPositions currentSetpoint=PivotPositions.STORED;
+    private static PivotPositions currentSetpoint = PivotPositions.STORED;
 
     private SparkMax motor;
     private RelativeEncoder encoder;
@@ -60,19 +60,15 @@ public class PivotSubsystem extends SubsystemBase {
 
             poseTimer.reset();
             poseTimer.start();
-
-            setPID();
         });
     }
 
-    private Runnable setPID() {
-        return (() -> {
-            TrapezoidProfile.State setpoint = PivotConstants.profile.calculate(poseTimer.get() + 0.02, new TrapezoidProfile.State(initalPosition, initalVelocity), new TrapezoidProfile.State(currentSetpoint.value, 0));
-
-            pidController.setReference(setpoint.position, SparkBase.ControlType.kPosition, ClosedLoopSlot.kSlot0, PivotConstants.feedforward.calculate(Rotation2d.fromDegrees(setpoint.position).getRadians(), Rotation2d.fromDegrees(setpoint.velocity).getRadians()));
-            
-            // pidController.setReference(currentSetpoint.value, SparkBase.ControlType.kPosition, ClosedLoopSlot.kSlot0);
-        });
+    /**Sets trapizod position
+     * @return Runable: trapizod position script for setPosition
+     */
+    private void runPID() {
+        TrapezoidProfile.State setpoint = PivotConstants.profile.calculate(poseTimer.get() + 0.02, new TrapezoidProfile.State(initalPosition, initalVelocity), new TrapezoidProfile.State(currentSetpoint.value, 0));
+        pidController.setReference(setpoint.position, SparkBase.ControlType.kPosition, ClosedLoopSlot.kSlot0, PivotConstants.feedforward.calculate(initalPosition, initalVelocity));
     }
 
     public WaitUntilCommand waitUntilTolerance() {
@@ -85,14 +81,18 @@ public class PivotSubsystem extends SubsystemBase {
         });
     }
 
-    // @Override
-    // public void periodic() {
-    //     try {
-    //         System.out.println("Pivot Position: " + encoder.getPosition());
-    //         System.out.println("Is in tolerance: " + isInTolerance().getAsBoolean());
-    //     } catch (Exception e) {
-    //     }
-    // }
+    @Override
+    public void periodic() {
+        // MOVES PIVOT IF NOT IN TOLERANCE
+        if(!isInTolerance().getAsBoolean()) {
+            runPID();
+        }
+        // try {
+        //     System.out.println("Pivot Position: " + encoder.getPosition());
+        //     System.out.println("Is in tolerance: " + isInTolerance().getAsBoolean());
+        // } catch (Exception e) {
+        // }
+    }
 
     // TODO: TEST BEFORE USING POSITIONS
     public enum PivotPositions {
