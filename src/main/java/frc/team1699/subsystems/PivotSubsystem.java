@@ -23,6 +23,7 @@ import frc.robot.Constants.PivotConstants;
 public class PivotSubsystem extends SubsystemBase {
     private static PivotPositions currentSetpoint = PivotPositions.STORED;
 
+    private boolean stopPid = false;
     private SparkMax motor;
     private RelativeEncoder encoder;
     private SparkClosedLoopController pidController;
@@ -37,8 +38,7 @@ public class PivotSubsystem extends SubsystemBase {
         encoder = motor.getAlternateEncoder();
         pidController = motor.getClosedLoopController();
         motor.configureAsync(PivotConfigs.motorConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
-
-        setPosition(PivotPositions.STORED);
+        poseTimer = new Timer();
     }
 
     public Command setRaw(double heightValue) {
@@ -53,13 +53,18 @@ public class PivotSubsystem extends SubsystemBase {
      */
     public Command setPosition(PivotPositions target) {
         return runOnce(() -> {
-            currentSetpoint = target;
+            if(!(Math.abs(encoder.getVelocity()) > 0.25)) {
+                stopPid = false;
+                currentSetpoint = target;
 
-            initalPosition = encoder.getPosition();
-            initalVelocity = encoder.getVelocity();
+                initalPosition = encoder.getPosition();
+                initalVelocity = encoder.getVelocity();
 
-            poseTimer.reset();
-            poseTimer.start();
+                poseTimer.reset();
+                poseTimer.start();
+            } else {
+                stopPid = true;
+            }
         });
     }
 
@@ -67,8 +72,10 @@ public class PivotSubsystem extends SubsystemBase {
      * @return Runable: trapizod position script for setPosition
      */
     private void runPID() {
-        TrapezoidProfile.State setpoint = PivotConstants.profile.calculate(poseTimer.get() + 0.02, new TrapezoidProfile.State(initalPosition, initalVelocity), new TrapezoidProfile.State(currentSetpoint.value, 0));
-        pidController.setReference(setpoint.position, SparkBase.ControlType.kPosition, ClosedLoopSlot.kSlot0, PivotConstants.feedforward.calculate(initalPosition, initalVelocity));
+        if(!isInTolerance().getAsBoolean()) {
+            TrapezoidProfile.State setpoint = PivotConstants.profile.calculate(poseTimer.get() + 0.02, new TrapezoidProfile.State(initalPosition, initalVelocity), new TrapezoidProfile.State(currentSetpoint.value, 0.05));
+            pidController.setReference(setpoint.position, SparkBase.ControlType.kPosition, ClosedLoopSlot.kSlot0, PivotConstants.feedforward.calculate(Rotation2d.fromDegrees(setpoint.position).getRadians(), Rotation2d.fromDegrees(setpoint.velocity).getRadians()));
+        } 
     }
 
     public WaitUntilCommand waitUntilTolerance() {
@@ -81,12 +88,15 @@ public class PivotSubsystem extends SubsystemBase {
         });
     }
 
+    
+
     @Override
     public void periodic() {
         // MOVES PIVOT IF NOT IN TOLERANCE
-        if(!isInTolerance().getAsBoolean()) {
+        if(!stopPid) {
             runPID();
         }
+        System.out.println(stopPid + ":" + encoder.getVelocity());
         // try {
         //     System.out.println("Pivot Position: " + encoder.getPosition());
         //     System.out.println("Is in tolerance: " + isInTolerance().getAsBoolean());

@@ -65,14 +65,14 @@ public final class Constants {
     // TODO: TUNE
     public static final double kStoredPoint = 10;
     public static final double kIntakePoint = 30;
-    public static final double kAmpPoint = 65;
+    public static final double kAmpPoint = 55;
 
-    public static final double kTolerance = 0.5;
+    public static final double kTolerance = 1.00;
 
     // Config Constants
     // TODO: TUNE
-    public static final double kForwardLimit = 0.8;
-    public static final double kReverseLimit = -0.8;
+    public static final double kForwardLimit = 0.85;
+    public static final double kReverseLimit = -0.85;
 
     public static final double kMaximumRotation = 66;
     public static final double kMinimumRotation = 0;
@@ -82,7 +82,7 @@ public final class Constants {
 
     public static final IdleMode kIdleMode = IdleMode.kBrake;
 
-    public static final double kP = 0.025;
+    public static final double kP = 0.05;
     public static final double kI = 0;
     public static final double kD = 0.016;
     public static final double kFF = 0;
@@ -91,7 +91,7 @@ public final class Constants {
     public static final double kOffset = 0;
 
     // TRAPIZOID PROFILE STUFF
-    public static final TrapezoidProfile profile = new TrapezoidProfile(new TrapezoidProfile.Constraints(5, 10));
+    public static final TrapezoidProfile profile = new TrapezoidProfile(new TrapezoidProfile.Constraints(12, 24));
     public static final ArmFeedforward feedforward = new ArmFeedforward(0, 0.523, 2.6);
   }
 
