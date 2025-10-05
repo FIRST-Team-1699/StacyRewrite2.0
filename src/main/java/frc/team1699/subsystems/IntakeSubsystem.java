@@ -17,6 +17,7 @@ public class IntakeSubsystem extends SubsystemBase {
 
     public IntakeSubsystem() {
         leadMotor= new SparkMax(IntakeConstants.kTopMotorID, MotorType.kBrushless);
+        follwMotor= new SparkMax(IntakeConstants.kBottomMotorID, MotorType.kBrushless);
 
         leadMotor.configureAsync(IntakeConfigs.leadConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
         follwMotor.configureAsync(IntakeConfigs.followConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);

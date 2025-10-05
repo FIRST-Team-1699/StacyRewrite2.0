@@ -17,7 +17,7 @@ public class GroundIntakeCommand extends Command {
     @Override
     public void initialize() {
         intake.intake();
-        indexer.intake();
+        indexer.outake();
     }
 
     @Override
