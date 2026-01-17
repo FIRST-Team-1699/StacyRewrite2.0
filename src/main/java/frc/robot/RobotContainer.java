@@ -10,7 +10,7 @@ import frc.team1699.subsystems.PivotSubsystem;
 import frc.team1699.subsystems.IndexerSubsystem;
 import frc.team1699.subsystems.ShooterSubsystem;
 import frc.team1699.commands.IntakeCommand;
-import frc.team1699.commands.PivotToTagCommand;
+import frc.team1699.commands.AimToTagCommand;
 import frc.team1699.commands.ShootCommand;
 import frc.team1699.subsystems.PivotSubsystem.PivotPositions;
 import swervelib.SwerveInputStream;
@@ -212,8 +212,8 @@ public class RobotContainer {
             pivot.setRaw(0)
         );
     
-    operatorController.start()
-        .onTrue(new PivotToTagCommand(pivot));
+    operatorController.a()
+        .whileTrue(new AimToTagCommand(pivot, drivetrain));
 
     operatorController.leftTrigger()
         .whileTrue(new IntakeCommand(shoot, indexer));

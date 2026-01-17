@@ -4,11 +4,14 @@
 
 package frc.robot;
 
+import org.photonvision.PhotonCamera;
+
 import com.pathplanner.lib.config.PIDConstants;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 
 import edu.wpi.first.math.interpolation.InterpolatingDoubleTreeMap;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.net.PortForwarder;
 
 public final class Constants {
     public static final class SwerveConstants {
@@ -90,9 +93,13 @@ public final class Constants {
     public static final double kOffset = 0;
   }
 
-  public static class LimelightConstants {
+  public static class PhotonConstants {
+    public static final PhotonCamera cam = new PhotonCamera("Cool_Cam");
     public static final InterpolatingDoubleTreeMap pivotToTag = new InterpolatingDoubleTreeMap();
     static {
+      cam.setPipelineIndex(0);
+
+      PortForwarder.add(5800, "photonvision.local", 5800);
       // KEY = DISTANCE FROM TAG TO BOT
       // VALUE = ANGLE OF PIVOT
       pivotToTag.put(null, null);
