@@ -82,7 +82,7 @@ public final class Constants {
     public static final double kStoredPoint = 10;
     public static final double kIntakePoint = 30;
     public static final double kShootPoint = 40;
-    public static final double kShootPointTwo = 43;
+    public static final double kShootPointTwo = 37;
     public static final double kAmpPoint = 65;
 
     public static final double kTolerance = 0.5;
@@ -110,7 +110,10 @@ public final class Constants {
   }
 
   public static class PhotonvisionConstants {
-    public static final PhotonCamera cam = new PhotonCamera("Cool_Cam");
+    public static final String kCamOneName = "Cool_Cam";
+
+    public static final double cam1XOffset = 0;
+    public static final double cam1YOffset = 0.23;
 
     public static final InterpolatingDoubleTreeMap score =new InterpolatingDoubleTreeMap();
 

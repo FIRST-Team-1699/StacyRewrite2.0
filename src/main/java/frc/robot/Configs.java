@@ -85,10 +85,8 @@ public final class Configs {
 
     public static final class PhotonConfigs {
         static {
-            PhotonvisionConstants.cam.setPipelineIndex(1);
-            PortForwarder.add(5800, "photonvision.local:5800", 5800);
-
-            PhotonvisionConstants.score.put(3.54, null);
+            PhotonvisionConstants.score.put(2.52, 39.0);
+            PhotonvisionConstants.score.put(2.52, 37.0);
         }
     }
 }
