@@ -18,7 +18,8 @@ public class ShooterSubsystem extends SubsystemBase {
     private TalonFXConfigurator leadConfigurator;
 
     public ShooterSubsystem() {
-        leadMotor = new TalonFX(ShooterConstants.kTopMotorID);
+        leadMotor = new TalonFX
+        (ShooterConstants.kTopMotorID);
         followMotor = new TalonFX(ShooterConstants.kBottomMotorID);
 
         configureMotors();

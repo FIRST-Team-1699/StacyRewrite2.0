@@ -6,9 +6,13 @@ import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.revrobotics.spark.ClosedLoopSlot;
 import com.revrobotics.spark.config.ClosedLoopConfig.FeedbackSensor;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
+
+import edu.wpi.first.net.PortForwarder;
+
 import com.revrobotics.spark.config.SparkMaxConfig;
 
 import frc.robot.Constants.IntakeConstants;
+import frc.robot.Constants.PhotonvisionConstants;
 import frc.robot.Constants.PivotConstants;
 import frc.robot.Constants.ShooterConstants;
 
@@ -76,6 +80,15 @@ public final class Configs {
             followConfig
                 .apply(leadConfig)
                 .follow(IntakeConstants.kTopMotorID,false);
+        }
+    }
+
+    public static final class PhotonConfigs {
+        static {
+            PhotonvisionConstants.cam.setPipelineIndex(1);
+            PortForwarder.add(5800, "photonvision.local:5800", 5800);
+
+            PhotonvisionConstants.score.put(3.54, null);
         }
     }
 }

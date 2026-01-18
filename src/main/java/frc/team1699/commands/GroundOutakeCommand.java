@@ -3,18 +3,23 @@ package frc.team1699.commands;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.team1699.subsystems.IndexerSubsystem;
 import frc.team1699.subsystems.IntakeSubsystem;
+import frc.team1699.subsystems.PivotSubsystem;
+import frc.team1699.subsystems.PivotSubsystem.PivotPositions;
 
 public class GroundOutakeCommand extends Command {
-    IntakeSubsystem intake;
-    IndexerSubsystem indexer;
-    public GroundOutakeCommand(IntakeSubsystem intake, IndexerSubsystem indexer) {
+    private IntakeSubsystem intake;
+    private IndexerSubsystem indexer;
+    private PivotSubsystem pivot;
+    public GroundOutakeCommand(IntakeSubsystem intake, IndexerSubsystem indexer, PivotSubsystem pivot) {
         this.intake = intake;
         this.indexer = indexer;
-        addRequirements(intake,indexer);
+        this.pivot = pivot;
+        addRequirements(intake,indexer, pivot);
     }
 
     @Override
     public void initialize() {
+        pivot.setPosition(PivotPositions.STORED);
         indexer.intake();
         intake.outake();
     }

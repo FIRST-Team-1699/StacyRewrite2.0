@@ -10,6 +10,8 @@ import frc.team1699.subsystems.PivotSubsystem;
 import frc.team1699.subsystems.IndexerSubsystem;
 import frc.team1699.subsystems.IntakeSubsystem;
 import frc.team1699.subsystems.ShooterSubsystem;
+import frc.team1699.commands.AimToTagCommand;
+import frc.team1699.commands.ChaiseToTagCommand;
 import frc.team1699.commands.GroundIntakeCommand;
 import frc.team1699.commands.GroundOutakeCommand;
 import frc.team1699.commands.IntakeCommand;
@@ -191,10 +193,19 @@ public class RobotContainer {
             pivot.setPosition(PivotPositions.INTAKE)
             .andThen(pivot.waitUntilTolerance())
         );
-
     operatorController.povUp()
         .onTrue(
             pivot.setPosition(PivotPositions.AMP)
+            .andThen(pivot.waitUntilTolerance())
+        );
+    operatorController.povRight()
+        .onTrue(
+            pivot.setPosition(PivotPositions.AIMING)
+            .andThen(pivot.waitUntilTolerance())
+        );
+    operatorController.y()
+        .onTrue(
+            pivot.setPosition(PivotPositions.AIMING_TWO)
             .andThen(pivot.waitUntilTolerance())
         );
     operatorController.leftTrigger()
@@ -204,10 +215,15 @@ public class RobotContainer {
         .whileTrue(new ShootCommand(shoot, indexer));
 
     operatorController.rightTrigger()
-        .whileTrue(new GroundIntakeCommand(intake, indexer));
+        .whileTrue(new GroundIntakeCommand(intake, indexer, pivot));
 
     operatorController.rightBumper()
-        .whileTrue(new GroundOutakeCommand(intake, indexer));
+        .whileTrue(new GroundOutakeCommand(intake, indexer, pivot));
+
+    operatorController.a()
+        .whileTrue(new ChaiseToTagCommand(drivetrain));
+    operatorController.b()
+        .whileTrue(new AimToTagCommand(drivetrain, pivot));
   }
 
   public Command getAutonomousCommand() {
