@@ -18,7 +18,7 @@ public class VisionSubsystem extends SubsystemBase {
 
     private PhotonCamera cam1;// cam2;
     private boolean hasTag;
-    private double yaw, x, y, z, xOffset, yOffset, xCamOffset, yCamOffset, distanceToTag;
+    private double yaw, x, y, z, xWaypointOffset, yWaypointOffset, xCamOffset, yCamOffset, distanceToTag;
 
     public VisionSubsystem () {
         cam1 = new PhotonCamera(PhotonvisionConstants.kCamOneName);
@@ -56,7 +56,7 @@ public class VisionSubsystem extends SubsystemBase {
     }
 
     public void setYawOnWaypoint() {
-        double tempDegrees = (Math.atan(this.x+xOffset/this.y+yOffset))*180/Math.PI;
+        double tempDegrees = (Math.atan(this.x+xWaypointOffset/this.y+yWaypointOffset))*180/Math.PI;
         this.yaw= (tempDegrees <0.0 ? tempDegrees+90 : tempDegrees-90 );
     }
 
@@ -73,7 +73,8 @@ public class VisionSubsystem extends SubsystemBase {
 
     @Override
     public void periodic() {
-        if (currentWaypoint.waypoint==null) {
+        if (currentWaypoint==TagWaypoint.NONE) {
+            this.hasTag=false;
             return;
         }
 
@@ -93,8 +94,8 @@ public class VisionSubsystem extends SubsystemBase {
             //     PhotonvisionConstants.cam2YOffset : this.yCamOffset;
 
             this.targetTagId=bestTag.getFiducialId();
-            this.xOffset=currentWaypoint.waypoint.getOffset(this.targetTagId)[0];
-            this.yOffset=currentWaypoint.waypoint.getOffset(this.targetTagId)[1];
+            this.xWaypointOffset=currentWaypoint.waypoint.getOffset(this.targetTagId)[0];
+            this.yWaypointOffset=currentWaypoint.waypoint.getOffset(this.targetTagId)[1];
 
             this.hasTag=true;
             this.x=bestTag.getBestCameraToTarget().getX()+xCamOffset;
@@ -104,19 +105,17 @@ public class VisionSubsystem extends SubsystemBase {
             setYawOnWaypoint();
             setDistanceToTag();
             System.out.println("PoseDist:" + this.getDistanceToTag());
+            return;
         }
-    }
 
-    /** NOTE: ALWAYS PUT CAMERAS IN ACCENDING ORDER FOR PARAMETERS!!! */
+        this.hasTag=false;
+    }
+    
     public PhotonTrackedTarget getCamTag(List<PhotonPipelineResult> camResults) {
         if(!camResults.isEmpty()) {
-            try {
-                var result = camResults.get(camResults.size() - 1);
-                if (result.hasTargets()) {
-                    return resolveTags(result);
-                }
-            } catch (Exception e) {
-                return null;
+            var result = camResults.get(camResults.size() - 1);
+            if (result.hasTargets()) {
+                return resolveTags(result);
             }
         }
         return null;
@@ -126,6 +125,9 @@ public class VisionSubsystem extends SubsystemBase {
         double lowestAmbuguity=0.3;
         PhotonTrackedTarget bestTag=null;
         for (var tag : result.getTargets()) {
+            if(tag==null) {
+                continue;
+            }
             if(tag.getPoseAmbiguity()<lowestAmbuguity && this.currentWaypoint.waypoint.hasId(tag.fiducialId)) {
                 lowestAmbuguity = tag.getPoseAmbiguity();
                 bestTag=tag;
