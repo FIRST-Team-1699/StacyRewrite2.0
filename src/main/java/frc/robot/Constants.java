@@ -11,11 +11,10 @@ import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 
 import edu.wpi.first.math.interpolation.InterpolatingDoubleTreeMap;
 import edu.wpi.first.math.util.Units;
-import edu.wpi.first.net.PortForwarder;
 
 public final class Constants {
     public static final class SwerveConstants {
-    public static final double kMaxSpeed = Units.feetToMeters(14.0);
+    public static final double kMaxSpeed = Units.feetToMeters(4.0);
   }
 
   public static final class OIConstants {
@@ -43,8 +42,9 @@ public final class Constants {
     public static final int kTopMotorID = 33;
     public static final int kBottomMotorID = 34;
 
-    public static final double kIntakeSpeed = .15;
-    public static final double kOutakeSpeed = -.25;
+    public static final double kIntakeSpeed = .2;
+    // public static final double kOutakeSpeed = -.5;
+    public static final double kOutakeSpeed = -.4;
     public static final double kShootSpeed = -.75;
 
     // Config Constants
@@ -52,11 +52,25 @@ public final class Constants {
     public static final double kReverseLimit = -.80;
   }
 
+  public static final class IntakeConstants {
+    // Subsystem Constants
+    public static final int kTopMotorID = 31;
+    public static final int kBottomMotorID = 32;
+
+    public static final double kIntakeSpeed = .3;
+    public static final double kOutakeSpeed = -.25;
+
+    // Config Constants
+    public static final double kForwardLimit = .80;
+    public static final double kReverseLimit = -.80;
+  }
+
+
   public static final class IndexerConstants {
     public static final int motorID=16;
 
     public static final double kIntakeSpeed = .25;
-    public static final double kOutakeSpeed = -.25;
+    public static final double kOutakeSpeed = -.35;
   }
 
   public static final class PivotConstants {
@@ -67,6 +81,8 @@ public final class Constants {
     // TODO: TUNE
     public static final double kStoredPoint = 10;
     public static final double kIntakePoint = 30;
+    public static final double kShootPoint = 40;
+    public static final double kShootPointTwo = 37;
     public static final double kAmpPoint = 65;
 
     public static final double kTolerance = 0.5;
@@ -93,13 +109,6 @@ public final class Constants {
     public static final double kOffset = 0;
   }
 
-<<<<<<< Updated upstream
-  public static class PhotonConstants {
-    public static final PhotonCamera cam = new PhotonCamera("Cool_Cam");
-    public static final InterpolatingDoubleTreeMap pivotToTag = new InterpolatingDoubleTreeMap();
-    static {
-      cam.setPipelineIndex(0);
-=======
   public static class PhotonvisionConstants {
     public static final String kCamOneName = "Cool_Cam1";
     public static final String kCamTwoName = "Cool_Cam2";
@@ -109,24 +118,8 @@ public final class Constants {
 
     public static final double cam2XOffset = 0;
     public static final double cam2YOffset = -0.23;
-<<<<<<< Updated upstream
-=======
 
     public static final InterpolatingDoubleTreeMap score =new InterpolatingDoubleTreeMap();
->>>>>>> Stashed changes
 
-    public static final InterpolatingDoubleTreeMap score =new InterpolatingDoubleTreeMap();
->>>>>>> Stashed changes
-
-      PortForwarder.add(5800, "photonvision.local", 5800);
-      // KEY = DISTANCE FROM TAG TO BOT
-      // VALUE = ANGLE OF PIVOT
-      pivotToTag.put(null, null);
-      pivotToTag.put(null, null);
-      pivotToTag.put(null, null);
-      pivotToTag.put(null, null);
-      pivotToTag.put(null, null);
-      pivotToTag.put(null, null);
-    }
   }
 }

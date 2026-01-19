@@ -77,8 +77,8 @@ public class VisionSubsystem extends SubsystemBase {
             return;
         }
 
-        var camOneTag = getTagFromPipeline(this.cam1.getAllUnreadResults());
-        // var camTwoTag = getTagFromPipeline(this.cam2.getAllUnreadResults());
+        var camOneTag = getCamTag(this.cam1.getAllUnreadResults());
+        // var camTwoTag = getCamTag(this.cam2.getAllUnreadResults());
         // var bestTag = bestOfTags(camOneTag,camTwoTag);
         var bestTag = bestOfTags(camOneTag);
         if (bestTag!=null) {
@@ -108,7 +108,7 @@ public class VisionSubsystem extends SubsystemBase {
     }
 
     /** NOTE: ALWAYS PUT CAMERAS IN ACCENDING ORDER FOR PARAMETERS!!! */
-    public PhotonTrackedTarget getTagFromPipeline(List<PhotonPipelineResult> camResults) {
+    public PhotonTrackedTarget getCamTag(List<PhotonPipelineResult> camResults) {
         if(!camResults.isEmpty()) {
             try {
                 var result = camResults.get(camResults.size() - 1);

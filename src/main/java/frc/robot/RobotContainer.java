@@ -6,6 +6,7 @@ package frc.robot;
 
 import frc.robot.Constants.OIConstants;
 import frc.team1699.subsystems.SwerveSubsystem;
+import frc.team1699.subsystems.VisionSubsystem;
 import frc.team1699.subsystems.PivotSubsystem;
 import frc.team1699.subsystems.IndexerSubsystem;
 import frc.team1699.subsystems.ShooterSubsystem;
@@ -45,6 +46,7 @@ public class RobotContainer {
     private PivotSubsystem pivot = new PivotSubsystem();
     private IndexerSubsystem indexer = new IndexerSubsystem();
     private ShooterSubsystem shoot = new ShooterSubsystem();
+    private VisionSubsystem vision = new VisionSubsystem();
 
     SwerveInputStream driveAngularVelocity = SwerveInputStream
         .of(drivetrain.getSwerveDrive(),
@@ -213,7 +215,7 @@ public class RobotContainer {
         );
     
     operatorController.a()
-        .whileTrue(new AimToTagCommand(pivot, drivetrain));
+        .whileTrue(new AimToTagCommand(drivetrain, pivot, vision));
 
     operatorController.leftTrigger()
         .whileTrue(new IntakeCommand(shoot, indexer));
