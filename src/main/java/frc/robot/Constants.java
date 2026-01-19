@@ -93,11 +93,25 @@ public final class Constants {
     public static final double kOffset = 0;
   }
 
+<<<<<<< Updated upstream
   public static class PhotonConstants {
     public static final PhotonCamera cam = new PhotonCamera("Cool_Cam");
     public static final InterpolatingDoubleTreeMap pivotToTag = new InterpolatingDoubleTreeMap();
     static {
       cam.setPipelineIndex(0);
+=======
+  public static class PhotonvisionConstants {
+    public static final String kCamOneName = "Cool_Cam1";
+    public static final String kCamTwoName = "Cool_Cam2";
+
+    public static final double cam1XOffset = 0;
+    public static final double cam1YOffset = 0.23;
+
+    public static final double cam2XOffset = 0;
+    public static final double cam2YOffset = -0.23;
+
+    public static final InterpolatingDoubleTreeMap score =new InterpolatingDoubleTreeMap();
+>>>>>>> Stashed changes
 
       PortForwarder.add(5800, "photonvision.local", 5800);
       // KEY = DISTANCE FROM TAG TO BOT
