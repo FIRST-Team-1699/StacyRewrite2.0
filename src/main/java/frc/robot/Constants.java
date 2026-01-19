@@ -109,6 +109,11 @@ public final class Constants {
 
     public static final double cam2XOffset = 0;
     public static final double cam2YOffset = -0.23;
+<<<<<<< Updated upstream
+=======
+
+    public static final InterpolatingDoubleTreeMap score =new InterpolatingDoubleTreeMap();
+>>>>>>> Stashed changes
 
     public static final InterpolatingDoubleTreeMap score =new InterpolatingDoubleTreeMap();
 >>>>>>> Stashed changes

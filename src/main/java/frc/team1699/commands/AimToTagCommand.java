@@ -8,8 +8,11 @@ import frc.team1699.subsystems.PivotSubsystem;
 import frc.team1699.subsystems.SwerveSubsystem;
 import frc.team1699.subsystems.PivotSubsystem.PivotPositions;
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
 import frc.robot.Constants.PhotonConstants;
 =======
+=======
+>>>>>>> Stashed changes
 import frc.team1699.subsystems.VisionSubsystem.TagWaypoint;
 import frc.utils.BeamBreak;
 >>>>>>> Stashed changes
@@ -73,6 +76,9 @@ public class AimToTagCommand extends Command {
         // new ShootCommand(shoot, indexer).schedule();
 
         vision.setWaypoint(TagWaypoint.NONE);
+<<<<<<< Updated upstream
+>>>>>>> Stashed changes
+=======
 >>>>>>> Stashed changes
     }
 }
