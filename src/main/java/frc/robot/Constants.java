@@ -113,11 +113,13 @@ public final class Constants {
     public static final String kCamOneName = "Cool_Cam1";
     public static final String kCamTwoName = "Cool_Cam2";
 
-    public static final double cam1XOffset = 0;
+    public static final double cam1XOffset = 0.0;
     public static final double cam1YOffset = 0.23;
+    public static final double cam1YawOffset = 0.0;
 
     public static final double cam2XOffset = 0;
     public static final double cam2YOffset = -0.23;
+    public static final double cam2YawOffset = 0.0;
 
     public static final InterpolatingDoubleTreeMap score =new InterpolatingDoubleTreeMap();
 

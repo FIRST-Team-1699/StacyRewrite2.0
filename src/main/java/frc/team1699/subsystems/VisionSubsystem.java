@@ -2,7 +2,6 @@ package frc.team1699.subsystems;
 
 import java.util.List;
 
-import org.photonvision.PhotonCamera;
 import org.photonvision.targeting.PhotonPipelineResult;
 import org.photonvision.targeting.PhotonTrackedTarget;
 
@@ -16,18 +15,30 @@ public class VisionSubsystem extends SubsystemBase {
     private TagWaypoint currentWaypoint;
     private int targetTagId;
 
-    private PhotonCamera cam1;// cam2;
+    // private PhotonCamera cam1;// cam2;
+    private Camera cam1; // cam2
     private boolean hasTag;
-    private double yaw, x, y, z, xWaypointOffset, yWaypointOffset, xCamOffset, yCamOffset, distanceToTag;
+    private double yaw, x, y, z, xWaypointOffset, yWaypointOffset, xCamOffset, yCamOffset, yawCamOffset, distanceToTag;
 
     public VisionSubsystem () {
-        cam1 = new PhotonCamera(PhotonvisionConstants.kCamOneName);
-        // cam2 = new PhotonCamera(PhotonvisionConstants.kCamTwoName);
+        cam1 = new Camera(
+            PhotonvisionConstants.kCamOneName,
+            new double[]{
+                PhotonvisionConstants.cam1XOffset,
+                PhotonvisionConstants.cam1YOffset,
+                PhotonvisionConstants.cam1YawOffset
+            }
+        );
+        // cam2 = new Camera(
+        //     PhotonvisionConstants.kCamOneName,
+        //     new double[]{
+        //         PhotonvisionConstants.cam2XOffset,
+        //         PhotonvisionConstants.cam2YOffset,
+        //         PhotonvisionConstants.cam2YawOffset
+        //     }
+        // );
 
-        cam1.setPipelineIndex(1);
-        // cam2.setPipelineIndex(1);
         PortForwarder.add(5800, "photonvision.local:5800", 5800);
-
         currentWaypoint=TagWaypoint.NONE;
     }
 
@@ -57,6 +68,7 @@ public class VisionSubsystem extends SubsystemBase {
 
     public void setYawOnWaypoint() {
         double tempDegrees = (Math.atan(this.x+xWaypointOffset/this.y+yWaypointOffset))*180/Math.PI;
+        tempDegrees += this.yawCamOffset;
         this.yaw= (tempDegrees <0.0 ? tempDegrees+90 : tempDegrees-90 );
     }
 
@@ -78,20 +90,12 @@ public class VisionSubsystem extends SubsystemBase {
             return;
         }
 
-        var camOneTag = getCamTag(this.cam1.getAllUnreadResults());
+        var camOneTag = getCamTag(this.cam1.getCam().getAllUnreadResults());
         // var camTwoTag = getCamTag(this.cam2.getAllUnreadResults());
         // var bestTag = bestOfTags(camOneTag,camTwoTag);
-        var bestTag = bestOfTags(camOneTag);
+        PhotonTrackedTarget bestTag = bestOfTags(camOneTag);
         if (bestTag!=null) {
-            this.xCamOffset = camOneTag == bestTag ? 
-                PhotonvisionConstants.cam1XOffset : this.xCamOffset;
-            this.yCamOffset = camOneTag == bestTag ? 
-                PhotonvisionConstants.cam1YOffset : this.yCamOffset;
-
-            // this.xCamOffset = camTwoTag == bestTag ? 
-            //     PhotonvisionConstants.cam2XOffset : this.xCamOffset;
-            // this.yCamOffset = camTwoTag == bestTag ? 
-            //     PhotonvisionConstants.cam2YOffset : this.yCamOffset;
+            setOffsets(bestTag, camOneTag);
 
             this.targetTagId=bestTag.getFiducialId();
             this.xWaypointOffset=currentWaypoint.waypoint.getOffset(this.targetTagId)[0];
@@ -105,13 +109,17 @@ public class VisionSubsystem extends SubsystemBase {
             setYawOnWaypoint();
             setDistanceToTag();
             System.out.println("PoseDist:" + this.getDistanceToTag());
+            System.out.println("Confidence:" + bestTag.getDetectedObjectConfidence());
             return;
         }
 
         this.hasTag=false;
     }
-    
+
     public PhotonTrackedTarget getCamTag(List<PhotonPipelineResult> camResults) {
+        if(camResults==null) {
+            return null;
+        }
         if(!camResults.isEmpty()) {
             var result = camResults.get(camResults.size() - 1);
             if (result.hasTargets()) {
@@ -153,6 +161,17 @@ public class VisionSubsystem extends SubsystemBase {
             }
         }
         return bestTag;
+    }
+
+    private void setOffsets(PhotonTrackedTarget bestTag, PhotonTrackedTarget ...tags) {
+        for(PhotonTrackedTarget tag: tags) {
+            this.xCamOffset = tag == bestTag ? 
+                cam1.getXOffset() : this.xCamOffset;
+            this.yCamOffset = tag == bestTag ? 
+                cam1.getYOffset() : this.yCamOffset;
+            this.yawCamOffset = tag == bestTag ? 
+                cam1.getYaw() : this.yawCamOffset;
+        }
     }
 
     public enum TagWaypoint {
