@@ -3,8 +3,10 @@ package frc.team1699.commands;
 import java.lang.annotation.Target;
 
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.interpolation.InterpolatingDoubleTreeMap;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.RobotContainer;
 import frc.robot.Constants.VisionConstants;
 import frc.team1699.subsystems.IndexerSubsystem;
 import frc.team1699.subsystems.PivotSubsystem;
@@ -22,6 +24,7 @@ public class AimToTagCommand extends Command {
     private VisionSubsystem vision;
 
     private TagWaypoint waypoint;
+    private InterpolatingDoubleTreeMap score =new InterpolatingDoubleTreeMap();
 
     private static PIDController headingController = new PIDController(.15, 0, 0);
     public AimToTagCommand(SwerveSubsystem drivetrain, PivotSubsystem pivot, VisionSubsystem vision, TagWaypoint waypoint) {
@@ -29,7 +32,11 @@ public class AimToTagCommand extends Command {
         this.pivot=pivot;
         this.vision=vision;
         this.waypoint=waypoint;
-        addRequirements(drivetrain,pivot,vision);
+        score.put(3.5, 35.0);
+        score.put(1.74, 40.0);
+        score.put(1.0, 50.0);
+
+        addRequirements(pivot,vision,drivetrain);
     }
 
     @Override
@@ -41,9 +48,9 @@ public class AimToTagCommand extends Command {
         //     return;
         // }
         vision.setWaypoint(waypoint);
-        double rotationOutput = headingController.calculate(vision.getYaw(), 0);
-        drivetrain.setChassisSpeeds(new ChassisSpeeds(0, 0, rotationOutput));
-        // pivot.setVisionPosition(VisionConstants.score.get(vision.getDistanceToTag()));
+        RobotContainer.rotationalAlignOutput = headingController.calculate(vision.getYaw(), 0);
+        drivetrain.setChassisSpeeds(new ChassisSpeeds(0, 0, RobotContainer.rotationalAlignOutput));
+        pivot.setVisionPosition(score.get(vision.getDistanceToTag()));
     }
 
     @Override
@@ -53,6 +60,7 @@ public class AimToTagCommand extends Command {
 
     @Override
     public void end(boolean isInterupted) {
+        RobotContainer.rotationalAlignOutput=0;
         if(isInterupted) {
             return;
         }

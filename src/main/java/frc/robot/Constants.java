@@ -123,7 +123,7 @@ public final class Constants {
     public static final double cam2YawOffset = -25.0;
 
     public static final double ambiguityTolerance=0.40;
-    public static final InterpolatingDoubleTreeMap score =new InterpolatingDoubleTreeMap();
+    // public static InterpolatingDoubleTreeMap score =new InterpolatingDoubleTreeMap();
 
   }
 }

@@ -7,11 +7,12 @@ import java.util.HashMap;
  */
 public class Waypoint {
     private HashMap<Integer,double[]> targetOffsetMap = new HashMap<>();
-
+    private double yawOffset;
     /** Uses targetOffsetMap to relate any ID to an offset (i.e.: waypoint)
+     * @param offset additional offset of yaw of a position
      * @param tags april tags of waypoint
      */
-    public Waypoint(AprilTagPoint ...tags) {
+    public Waypoint(double offset, AprilTagPoint ...tags) {
         for(AprilTagPoint tag : tags) {
             this.targetOffsetMap.put(tag.getID(), tag.getOffset());
         }
@@ -29,5 +30,9 @@ public class Waypoint {
      **/
     public boolean hasId(int id) {
         return this.targetOffsetMap.containsKey(id);
+    }
+
+    public double getYawOffset() {
+        return  this.yawOffset;
     }
 }

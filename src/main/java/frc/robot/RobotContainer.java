@@ -39,6 +39,7 @@ import java.io.File;
 import com.pathplanner.lib.auto.NamedCommands;
 
 public class RobotContainer {
+    public static double rotationalAlignOutput;
 
     private final CommandXboxController driverController = new CommandXboxController(OIConstants.kDriverControllerPort);
     private final CommandXboxController operatorController = new CommandXboxController(OIConstants.kOperatorControllerPort);

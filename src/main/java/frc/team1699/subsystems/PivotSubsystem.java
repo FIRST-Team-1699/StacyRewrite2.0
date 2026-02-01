@@ -50,13 +50,9 @@ public class PivotSubsystem extends SubsystemBase {
         });
     }
 
-    public Command setVisionPosition(double position) {
-        return runOnce(() -> {
-            try {
-                currentSetpoint = PivotPositions.AIMING_VISION;
-                pidController.setReference(position, SparkBase.ControlType.kPosition, ClosedLoopSlot.kSlot0);
-            } catch (Exception e) {}
-        });
+    public void setVisionPosition(double position) {
+        currentSetpoint = PivotPositions.AIMING_VISION;
+        pidController.setReference(position, SparkBase.ControlType.kPosition, ClosedLoopSlot.kSlot0);
     }
 
     public WaitUntilCommand waitUntilTolerance() {

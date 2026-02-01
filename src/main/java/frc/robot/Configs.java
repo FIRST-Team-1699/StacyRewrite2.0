@@ -76,10 +76,10 @@ public final class Configs {
     }
 
     public static final class PhotonConfigs {
-        static {
-            VisionConstants.score.put(4.5, 35.0);
-            VisionConstants.score.put(2.74, 40.0);
-            VisionConstants.score.put(2.0, 50.0);
-        }
+        // static {
+        //     VisionConstants.score.put(4.5, 35.0);
+        //     VisionConstants.score.put(2.74, 40.0);
+        //     VisionConstants.score.put(2.0, 50.0);
+        // }
     }
 }
