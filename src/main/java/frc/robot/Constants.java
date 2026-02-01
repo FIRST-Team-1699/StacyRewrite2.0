@@ -81,7 +81,7 @@ public final class Constants {
     // TODO: TUNE
     public static final double kStoredPoint = 10;
     public static final double kIntakePoint = 30;
-    public static final double kShootPoint = 40;
+    public static final double kShootPoint = 35;
     public static final double kShootPointTwo = 37;
     public static final double kAmpPoint = 65;
 
@@ -109,7 +109,7 @@ public final class Constants {
     public static final double kOffset = 0;
   }
 
-  public static class PhotonvisionConstants {
+  public static class VisionConstants {
     public static final String kCamOneName = "Cool_Cam1";
     public static final String kCamTwoName = "Cool_Cam2";
 
@@ -118,9 +118,11 @@ public final class Constants {
     public static final double cam1YawOffset = 0.0;
 
     public static final double cam2XOffset = 0;
-    public static final double cam2YOffset = -0.23;
-    public static final double cam2YawOffset = 0.0;
+    public static final double cam2YOffset = -0.39;
+    // public static final double cam2YawOffset = 15.0;
+    public static final double cam2YawOffset = -25.0;
 
+    public static final double ambiguityTolerance=0.40;
     public static final InterpolatingDoubleTreeMap score =new InterpolatingDoubleTreeMap();
 
   }

@@ -5,7 +5,6 @@ import java.util.function.BooleanSupplier;
 import com.ctre.phoenix6.configs.TalonFXConfigurator;
 import com.ctre.phoenix6.controls.Follower;
 import com.ctre.phoenix6.hardware.TalonFX;
-import com.ctre.phoenix6.signals.MotorArrangementValue;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.ShooterConstants;
@@ -19,7 +18,8 @@ public class ShooterSubsystem extends SubsystemBase {
     private TalonFXConfigurator leadConfigurator;
 
     public ShooterSubsystem() {
-        leadMotor = new TalonFX(ShooterConstants.kTopMotorID);
+        leadMotor = new TalonFX
+        (ShooterConstants.kTopMotorID);
         followMotor = new TalonFX(ShooterConstants.kBottomMotorID);
 
         configureMotors();

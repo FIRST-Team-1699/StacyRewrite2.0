@@ -9,9 +9,12 @@ import frc.team1699.subsystems.SwerveSubsystem;
 import frc.team1699.subsystems.VisionSubsystem;
 import frc.team1699.subsystems.PivotSubsystem;
 import frc.team1699.subsystems.IndexerSubsystem;
+import frc.team1699.subsystems.IntakeSubsystem;
 import frc.team1699.subsystems.ShooterSubsystem;
 import frc.team1699.commands.IntakeCommand;
 import frc.team1699.commands.AimToTagCommand;
+import frc.team1699.commands.GroundIntakeCommand;
+import frc.team1699.commands.GroundOutakeCommand;
 import frc.team1699.commands.ShootCommand;
 import frc.team1699.subsystems.PivotSubsystem.PivotPositions;
 import swervelib.SwerveInputStream;
@@ -47,10 +50,11 @@ public class RobotContainer {
     private IndexerSubsystem indexer = new IndexerSubsystem();
     private ShooterSubsystem shoot = new ShooterSubsystem();
     private VisionSubsystem vision = new VisionSubsystem();
+    private IntakeSubsystem intake = new IntakeSubsystem();
 
     SwerveInputStream driveAngularVelocity = SwerveInputStream
         .of(drivetrain.getSwerveDrive(),
-            (() -> {
+            (() -> {                                                                                                            
                 return driverController.getLeftY() * -1;
             }),
             () -> {
@@ -215,13 +219,25 @@ public class RobotContainer {
         );
     
     operatorController.a()
-        .whileTrue(new AimToTagCommand(drivetrain, pivot, vision));
+        .whileTrue(new AimToTagCommand(drivetrain, pivot, vision, VisionSubsystem.TagWaypoint.CAMERA_TUNE));
+
+    driverController.b()
+        .whileTrue(new AimToTagCommand(drivetrain, pivot, vision, VisionSubsystem.TagWaypoint.RED_HUB));
+
+    operatorController.y()
+        .onTrue(pivot.setPosition(PivotPositions.AIMING));    
 
     operatorController.leftTrigger()
         .whileTrue(new IntakeCommand(shoot, indexer));
             
     operatorController.leftBumper()
         .whileTrue(new ShootCommand(shoot, indexer));
+
+    operatorController.rightTrigger()
+        .whileTrue(new GroundIntakeCommand(intake, indexer, pivot));
+
+    operatorController.rightBumper()
+        .whileTrue(new GroundOutakeCommand(intake, indexer, pivot));
   }
 
   public Command getAutonomousCommand() {

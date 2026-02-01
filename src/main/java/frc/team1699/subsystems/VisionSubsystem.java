@@ -8,38 +8,41 @@ import org.photonvision.targeting.PhotonTrackedTarget;
 import edu.wpi.first.net.PortForwarder;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.Constants.PhotonvisionConstants;
+import frc.robot.Constants.VisionConstants;
 import frc.utils.WaypointManagment.*;
 
 public class VisionSubsystem extends SubsystemBase {
-    private TagWaypoint currentWaypoint;
+    public static TagWaypoint currentWaypoint;
+    public static double currentAmbiguity;
     private int targetTagId;
 
-    // private PhotonCamera cam1;// cam2;
-    private Camera cam1; // cam2
+    private Camera cam2, cam1;
+    private CameraHandler camHandler;
     private boolean hasTag;
-    private double yaw, x, y, z, xWaypointOffset, yWaypointOffset, xCamOffset, yCamOffset, yawCamOffset, distanceToTag;
+    private double yaw, x, y, z, xWaypointOffset, yWaypointOffset, distanceToTag; // yawCameraOffset;
 
     public VisionSubsystem () {
         cam1 = new Camera(
-            PhotonvisionConstants.kCamOneName,
+            VisionConstants.kCamOneName,
             new double[]{
-                PhotonvisionConstants.cam1XOffset,
-                PhotonvisionConstants.cam1YOffset,
-                PhotonvisionConstants.cam1YawOffset
+                VisionConstants.cam1XOffset,
+                VisionConstants.cam1YOffset,
+                VisionConstants.cam1YawOffset
             }
         );
-        // cam2 = new Camera(
-        //     PhotonvisionConstants.kCamOneName,
-        //     new double[]{
-        //         PhotonvisionConstants.cam2XOffset,
-        //         PhotonvisionConstants.cam2YOffset,
-        //         PhotonvisionConstants.cam2YawOffset
-        //     }
-        // );
+        cam2 = new Camera(
+            VisionConstants.kCamTwoName,
+            new double[]{
+                VisionConstants.cam2XOffset,
+                VisionConstants.cam2YOffset,
+                VisionConstants.cam2YawOffset
+            }
+        );
+        // camHandler= new CameraHandler(cam1,cam2);
+        camHandler= new CameraHandler(cam2);
 
         PortForwarder.add(5800, "photonvision.local:5800", 5800);
-        currentWaypoint=TagWaypoint.NONE;
+        currentWaypoint=TagWaypoint.CAMERA_TUNE;
     }
 
     public double getYaw() {
@@ -67,9 +70,8 @@ public class VisionSubsystem extends SubsystemBase {
     }
 
     public void setYawOnWaypoint() {
-        double tempDegrees = (Math.atan(this.x+xWaypointOffset/this.y+yWaypointOffset))*180/Math.PI;
-        tempDegrees += this.yawCamOffset;
-        this.yaw= (tempDegrees <0.0 ? tempDegrees+90 : tempDegrees-90 );
+        double tempDegrees = (Math.atan((this.x+xWaypointOffset)/(this.y+yWaypointOffset))*180/Math.PI);
+        this.yaw= (tempDegrees <0.0 ? tempDegrees + 90 : tempDegrees -90 );
     }
 
     public void setDistanceToTag() {
@@ -77,107 +79,47 @@ public class VisionSubsystem extends SubsystemBase {
         this.distanceToTag = Math.sqrt(tempDistance);
     }
 
-    public Command setWaypoint(TagWaypoint waypoint) {
-        return runOnce(() -> {
-            this.currentWaypoint = waypoint;
-        });
+    public void setWaypoint(TagWaypoint waypoint) {
+        currentWaypoint = waypoint;
     }
 
+    PhotonTrackedTarget bestTag;
     @Override
     public void periodic() {
         if (currentWaypoint==TagWaypoint.NONE) {
-            this.hasTag=false;
             return;
         }
-
-        var camOneTag = getCamTag(this.cam1.getCam().getAllUnreadResults());
-        // var camTwoTag = getCamTag(this.cam2.getAllUnreadResults());
-        // var bestTag = bestOfTags(camOneTag,camTwoTag);
-        PhotonTrackedTarget bestTag = bestOfTags(camOneTag);
+        bestTag=camHandler.getBestTag();
         if (bestTag!=null) {
-            setOffsets(bestTag, camOneTag);
-
             this.targetTagId=bestTag.getFiducialId();
             this.xWaypointOffset=currentWaypoint.waypoint.getOffset(this.targetTagId)[0];
             this.yWaypointOffset=currentWaypoint.waypoint.getOffset(this.targetTagId)[1];
 
             this.hasTag=true;
-            this.x=bestTag.getBestCameraToTarget().getX()+xCamOffset;
-            this.y=bestTag.getBestCameraToTarget().getY()+yCamOffset;
+            this.x=bestTag.getBestCameraToTarget().getX() + camHandler.getXOffset();
+            this.y=bestTag.getBestCameraToTarget().getY() + camHandler.getYOffset();
             this.z=bestTag.getBestCameraToTarget().getZ();
 
             setYawOnWaypoint();
             setDistanceToTag();
-            System.out.println("PoseDist:" + this.getDistanceToTag());
-            System.out.println("Confidence:" + bestTag.getDetectedObjectConfidence());
+            // System.out.println("X, Y:" + this.x + "," + this.y);
+            // System.out.println("Yaw:" + this.getYaw());
+            // System.out.println("Actual Yaw:" + bestTag.getYaw());
+            // System.out.println("Distance to score:" + this.distanceToTag);
             return;
-        }
-
+        } 
+        currentAmbiguity=1;
         this.hasTag=false;
     }
 
-    public PhotonTrackedTarget getCamTag(List<PhotonPipelineResult> camResults) {
-        if(camResults==null) {
-            return null;
-        }
-        if(!camResults.isEmpty()) {
-            var result = camResults.get(camResults.size() - 1);
-            if (result.hasTargets()) {
-                return resolveTags(result);
-            }
-        }
-        return null;
-    }
-
-    public PhotonTrackedTarget resolveTags(PhotonPipelineResult result) {
-        double lowestAmbuguity=0.3;
-        PhotonTrackedTarget bestTag=null;
-        for (var tag : result.getTargets()) {
-            if(tag==null) {
-                continue;
-            }
-            if(tag.getPoseAmbiguity()<lowestAmbuguity && this.currentWaypoint.waypoint.hasId(tag.fiducialId)) {
-                lowestAmbuguity = tag.getPoseAmbiguity();
-                bestTag=tag;
-            }
-        } 
-        return bestTag;
-    }
-
-    public boolean hasTargetTag(int id) {
-        return this.currentWaypoint.waypoint.hasId(id);
-    }
-
-    public PhotonTrackedTarget bestOfTags(PhotonTrackedTarget ...tags) {
-        double lowestAmbuguity=0.3;
-        PhotonTrackedTarget bestTag=null;
-        for(var tag: tags) {
-            if(tag==null) {
-                continue;
-            }
-            if(tag.getPoseAmbiguity()<lowestAmbuguity) {
-                lowestAmbuguity = tag.getPoseAmbiguity();
-                bestTag=tag;
-            }
-        }
-        return bestTag;
-    }
-
-    private void setOffsets(PhotonTrackedTarget bestTag, PhotonTrackedTarget ...tags) {
-        for(PhotonTrackedTarget tag: tags) {
-            this.xCamOffset = tag == bestTag ? 
-                cam1.getXOffset() : this.xCamOffset;
-            this.yCamOffset = tag == bestTag ? 
-                cam1.getYOffset() : this.yCamOffset;
-            this.yawCamOffset = tag == bestTag ? 
-                cam1.getYaw() : this.yawCamOffset;
-        }
-    }
 
     public enum TagWaypoint {
         NONE(),
+        CAMERA_TUNE(new Waypoint(            
+            new AprilTagPoint(3, new double[]{0,0})
+        )),
         BASKET_PRACTICE(new Waypoint(            
-            new AprilTagPoint(3, new double[]{1.41,0})
+            new AprilTagPoint(2, new double[]{1.41,0})
         )),
         BLUE_HUB(new Waypoint(
             new AprilTagPoint(18, new double[]{0,0}),
@@ -206,8 +148,8 @@ public class VisionSubsystem extends SubsystemBase {
         )),
 
         RED_HUB(new Waypoint(
-            new AprilTagPoint(5, new double[]{0,0}),
-            new AprilTagPoint(8, new double[]{0,0}),
+            // new AprilTagPoint(5, new double[]{0.46,-0.183}),
+            new AprilTagPoint(8, new double[]{0.46,.342}),
             new AprilTagPoint(9, new double[]{0,0}),
             new AprilTagPoint(10, new double[]{0,0}),
             new AprilTagPoint(11, new double[]{0,0}),

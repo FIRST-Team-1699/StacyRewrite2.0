@@ -8,8 +8,10 @@ import com.revrobotics.spark.config.ClosedLoopConfig;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import com.revrobotics.spark.config.SparkMaxConfig;
 
+import frc.robot.Constants.IntakeConstants;
 import frc.robot.Constants.PivotConstants;
 import frc.robot.Constants.ShooterConstants;
+import frc.robot.Constants.VisionConstants;
 
 
 
@@ -58,10 +60,26 @@ public final class Configs {
         }
     }
 
-    public static final class PhotonConfigs {
-        
-        static {
+    public static final class IntakeConfigs {
+        public static final SparkMaxConfig leadConfig = new SparkMaxConfig();
+        public static final SparkMaxConfig followConfig = new SparkMaxConfig();
 
+        static {
+            leadConfig
+                .inverted(true)
+                .idleMode(IdleMode.kCoast);
+
+            followConfig
+                .apply(leadConfig)
+                .follow(IntakeConstants.kTopMotorID,false);
+        }
+    }
+
+    public static final class PhotonConfigs {
+        static {
+            VisionConstants.score.put(4.5, 35.0);
+            VisionConstants.score.put(2.74, 40.0);
+            VisionConstants.score.put(2.0, 50.0);
         }
     }
 }

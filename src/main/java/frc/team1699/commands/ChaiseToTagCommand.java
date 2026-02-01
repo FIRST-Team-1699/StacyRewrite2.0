@@ -26,7 +26,7 @@ public class ChaiseToTagCommand extends Command {
         if (!vision.getHasTag()) {
             return;
         }
-        vision.setWaypoint(TagWaypoint.BASKET_PRACTICE);
+        vision.setWaypoint(TagWaypoint.CAMERA_TUNE);
         double rotationOutput = headingController.calculate(vision.getYaw(), 0);
         double forwardOutput = movementController.calculate(vision.getX(), 2);
         drivetrain.setChassisSpeeds(new ChassisSpeeds(forwardOutput, 0, rotationOutput));

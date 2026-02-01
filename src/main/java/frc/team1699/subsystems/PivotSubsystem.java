@@ -11,15 +11,14 @@ import com.revrobotics.spark.SparkBase.PersistMode;
 import com.revrobotics.spark.SparkBase.ResetMode;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 
-import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
-
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import frc.robot.Configs.PivotConfigs;
+import frc.robot.Constants.VisionConstants;
 import frc.robot.Constants.PivotConstants;
+import frc.team1699.subsystems.PivotSubsystem.PivotPositions;
 
 public class PivotSubsystem extends SubsystemBase {
     private static PivotPositions currentSetpoint=PivotPositions.STORED;
@@ -38,9 +37,9 @@ public class PivotSubsystem extends SubsystemBase {
         setPosition(PivotPositions.STORED);
     }
 
-    public Command setRaw(double percentage) {
+    public Command setRaw(double heightValue) {
         return runOnce(() -> {
-            motor.set(percentage);
+            motor.set(heightValue);
         });
     }
 
@@ -48,6 +47,15 @@ public class PivotSubsystem extends SubsystemBase {
         return runOnce(() -> {
             currentSetpoint = target;
             pidController.setReference(currentSetpoint.value, SparkBase.ControlType.kPosition, ClosedLoopSlot.kSlot0);
+        });
+    }
+
+    public Command setVisionPosition(double position) {
+        return runOnce(() -> {
+            try {
+                currentSetpoint = PivotPositions.AIMING_VISION;
+                pidController.setReference(position, SparkBase.ControlType.kPosition, ClosedLoopSlot.kSlot0);
+            } catch (Exception e) {}
         });
     }
 
@@ -64,7 +72,8 @@ public class PivotSubsystem extends SubsystemBase {
     @Override
     public void periodic() {
         try {
-            System.out.println("Pivot Position: " + encoder.getPosition());
+            // System.out.println("Pivot Position: " + encoder.getPosition());
+            // System.out.println("Is in tolerance: " + isInTolerance().getAsBoolean());
         } catch (Exception e) {
         }
     }
@@ -74,7 +83,8 @@ public class PivotSubsystem extends SubsystemBase {
         STORED(PivotConstants.kStoredPoint),
         AMP(PivotConstants.kAmpPoint),
         INTAKE(PivotConstants.kIntakePoint),
-        AIMING();
+        AIMING(PivotConstants.kShootPoint),
+        AIMING_VISION();
 
         /**
          * Determines the position the the pivot moves to. This is not final so that AimToTagCommand can change the value of AIMING.
