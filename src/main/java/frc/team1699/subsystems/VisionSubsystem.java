@@ -5,6 +5,8 @@ import java.util.List;
 import org.photonvision.targeting.PhotonPipelineResult;
 import org.photonvision.targeting.PhotonTrackedTarget;
 
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.net.PortForwarder;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -19,7 +21,7 @@ public class VisionSubsystem extends SubsystemBase {
     private Camera cam2, cam1;
     private CameraHandler camHandler;
     private boolean hasTag;
-    private double yaw, x, y, z, xWaypointOffset, yWaypointOffset, distanceToTag; // yawCameraOffset;
+    private double tagYaw, yaw, x, y, z, xWaypointOffset, yWaypointOffset, distanceToTag; // yawCameraOffset;
 
     public VisionSubsystem () {
         cam1 = new Camera(
@@ -69,11 +71,16 @@ public class VisionSubsystem extends SubsystemBase {
     }
 
     public void setYawOnWaypoint() {
-        double tempDegrees = (Math.atan((this.x+xWaypointOffset)/(this.y+yWaypointOffset))*180/Math.PI);
+        double tempDegrees = (Math.atan((this.x)/(this.y))*180/Math.PI);
         this.yaw= (tempDegrees <0.0 ? tempDegrees + 90 : tempDegrees -90 );
+
+        if(Math.abs(this.y)<VisionConstants.kPositionTolerance) {
+            this.yaw=0;
+        }
         // this.yaw += currentWaypoint.waypoint.getYawOffset();
         // this.yaw+=10;
     }
+
 
     public void setDistanceToTag() {
         double tempDistance = Math.pow(this.x, 2.0) + Math.pow(this.y, 2.0);
@@ -95,118 +102,112 @@ public class VisionSubsystem extends SubsystemBase {
             this.targetTagId=bestTag.getFiducialId();
 
             this.hasTag=true;
-            this.x=bestTag.getBestCameraToTarget().getX() + camHandler.getXOffset();
-            this.y=bestTag.getBestCameraToTarget().getY() + camHandler.getYOffset();
+            this.x=bestTag.getBestCameraToTarget().getX() + this.camHandler.getXOffset();
+            this.y=bestTag.getBestCameraToTarget().getY() + this.camHandler.getYOffset();
             this.z=bestTag.getBestCameraToTarget().getZ();
 
-            this.xWaypointOffset=currentWaypoint.waypoint.getOffset(this.targetTagId)[0];
-            this.yWaypointOffset= this.y<0 ? 
-                currentWaypoint.waypoint.getOffset(this.targetTagId)[1]:
-                -currentWaypoint.waypoint.getOffset(this.targetTagId)[1];
+            this.xWaypointOffset=currentWaypoint.waypoint.getOffset(this.targetTagId).getX();
+            this.yWaypointOffset= // this.y>0 ?
+                currentWaypoint.waypoint.getOffset(this.targetTagId).getY();
+                // -currentWaypoint.waypoint.getOffset(this.targetTagId).getY();
+
+            this.y+=yWaypointOffset;
+            this.x+=xWaypointOffset;
+
 
             setYawOnWaypoint();
             setDistanceToTag();
             System.out.println("X, Y:" + this.x + "," + this.y);
-            System.out.println("Yaw:" + this.getYaw());
-            // System.out.println("Actual Yaw:" + bestTag.getYaw());
-            // System.out.println("Distance to score:" + this.distanceToTag);
+            System.out.println("Actual Yaw:" + bestTag.getYaw());
             return;
         } 
         currentAmbiguity=1;
         this.hasTag=false;
     }
 
+    public void disableStickyCam() {
+        camHandler.disableStickyCam();
+    }
+
 
     public enum TagWaypoint {
         NONE(),
         CAMERA_TUNE(new Waypoint(    
-            0,        
-            new AprilTagPoint(3, new double[]{0,0})
+            new AprilTagPoint(3,  new Pose2d(0,0, new Rotation2d()))
         )),
-        BASKET_PRACTICE(new Waypoint(
-            0,            
-            new AprilTagPoint(2, new double[]{1.41,0})
+        BASKET_PRACTICE(new Waypoint(       
+            new AprilTagPoint(2,  new Pose2d(1.41,0, new Rotation2d()))
         )),
         BLUE_HUB(new Waypoint(
-            0,
-            new AprilTagPoint(18, new double[]{0,0}),
-            new AprilTagPoint(27, new double[]{0,0}),
-            new AprilTagPoint(26, new double[]{0,0}),
-            new AprilTagPoint(25, new double[]{0,0}),
-            new AprilTagPoint(24, new double[]{0,0}),
-            new AprilTagPoint(21, new double[]{0,0})
+            new AprilTagPoint(18,  new Pose2d(0,0, new Rotation2d())),
+            new AprilTagPoint(27,  new Pose2d(0,0, new Rotation2d())),
+            new AprilTagPoint(26,  new Pose2d(0,0, new Rotation2d())),
+            new AprilTagPoint(25,  new Pose2d(0,0, new Rotation2d())),
+            new AprilTagPoint(24,  new Pose2d(0,0, new Rotation2d())),
+            new AprilTagPoint(21,  new Pose2d(0,0, new Rotation2d()))
         )),
         BLUE_SHUFFLE_TOP(new Waypoint(
-            0,
-            new AprilTagPoint(17, new double[]{0,0}),
-            new AprilTagPoint(19, new double[]{0,0})
+            new AprilTagPoint(17,  new Pose2d(0,0, new Rotation2d())),
+            new AprilTagPoint(19,  new Pose2d(0,0, new Rotation2d()))
         )),
         BLUE_SHUFFLE_BOTTOM(new Waypoint(
-            0,
-            new AprilTagPoint(20, new double[]{0,0}),
-            new AprilTagPoint(22, new double[]{0,0})
+            new AprilTagPoint(20,  new Pose2d(0,0, new Rotation2d())),
+            new AprilTagPoint(22,  new Pose2d(0,0, new Rotation2d()))
         )),
         BLUE_HP(new Waypoint(
-            0,
-            new AprilTagPoint(29, new double[]{0,0})
+            new AprilTagPoint(29,  new Pose2d(0,0, new Rotation2d()))
         )),
         BLUE_GROUND_INTAKE(new Waypoint(
-            0,
-            new AprilTagPoint(23, new double[]{0,0})
+            new AprilTagPoint(23,  new Pose2d(0,0, new Rotation2d()))
         )),
         BLUE_CLIMB(new Waypoint(
-            0,
-            new AprilTagPoint(31, new double[]{0,0})
+            new AprilTagPoint(31,  new Pose2d(0,0, new Rotation2d()))
         )),
 
         RED_HUB(new Waypoint(
-            30,
-            new AprilTagPoint(5, new double[]{0.46,0.205}),
-            new AprilTagPoint(8, new double[]{0.46,.323}),
-            new AprilTagPoint(9, new double[]{0,0}),
-            new AprilTagPoint(10, new double[]{0,0}),
-            new AprilTagPoint(11, new double[]{0,0}),
-            new AprilTagPoint(2, new double[]{0,0})
+            new AprilTagPoint(5,  new Pose2d(0.46,0, new Rotation2d())),
+            new AprilTagPoint(8,  new Pose2d(0.46,-.323, new Rotation2d())),
+            new AprilTagPoint(9,  new Pose2d(0.46,0.352, new Rotation2d())),
+            new AprilTagPoint(10,  new Pose2d(0.46,0, new Rotation2d())),
+            new AprilTagPoint(11,  new Pose2d(0.46,0.352, new Rotation2d())),
+            new AprilTagPoint(2,  new Pose2d(0.46,0, new Rotation2d())),
+            new AprilTagPoint(11,  new Pose2d(0.46,0.352, new Rotation2d())),
+            new AprilTagPoint(2,  new Pose2d(0.46,0, new Rotation2d())),
+            new AprilTagPoint(3,  new Pose2d(0.46,0.352, new Rotation2d())),
+            new AprilTagPoint(4,  new Pose2d(0.46,0, new Rotation2d()))
         )),
         RED_SHUFFLE_TOP(new Waypoint(
-            0,
-            new AprilTagPoint(6, new double[]{0,0}),
-            new AprilTagPoint(4, new double[]{0,0})
+            new AprilTagPoint(6,  new Pose2d(0,0, new Rotation2d())),
+            new AprilTagPoint(4,  new Pose2d(0,0, new Rotation2d()))
         )),
         RED_SHUFFLE_BOTTOM(new Waypoint(
-            0,
-            new AprilTagPoint(3, new double[]{0,0}),
-            new AprilTagPoint(1, new double[]{0,0})
+            new AprilTagPoint(3,  new Pose2d(0,0, new Rotation2d())),
+            new AprilTagPoint(1,  new Pose2d(0,0, new Rotation2d()))
         )),
         RED_HP(new Waypoint(
-            0,
-            new AprilTagPoint(13, new double[]{0,0})
+            new AprilTagPoint(13,  new Pose2d(0,0, new Rotation2d()))
         )),
         RED_GROUND_INTAKE(new Waypoint(
-            0,
-            new AprilTagPoint(7, new double[]{0,0})
+            new AprilTagPoint(7,  new Pose2d(0,0, new Rotation2d()))
         )),
         RED_CLIMB(new Waypoint(
-            0,
-            new AprilTagPoint(15, new double[]{0,0})
+            new AprilTagPoint(15,  new Pose2d(0,0, new Rotation2d()))
         )),
         
         NEUTRAL_TOP(new Waypoint(
-            0,
-            new AprilTagPoint(6, new double[]{0,0}),
-            new AprilTagPoint(17, new double[]{0,0})
+            new AprilTagPoint(6,  new Pose2d(0,0, new Rotation2d())),
+            new AprilTagPoint(17,  new Pose2d(0,0, new Rotation2d()))
         )),
         NEUTRAL_BOTTOM(new Waypoint(
-            0,
-            new AprilTagPoint(1, new double[]{0,0}),
-            new AprilTagPoint(22, new double[]{0,0})
+            new AprilTagPoint(1,  new Pose2d(0,0, new Rotation2d())),
+            new AprilTagPoint(22,  new Pose2d(0,0, new Rotation2d()))
         ));
         public Waypoint waypoint;
         TagWaypoint(Waypoint waypoint) {
             this.waypoint = waypoint;
         }
         TagWaypoint() {
-            this.waypoint = new Waypoint(0,new AprilTagPoint(0,new double[]{0,0}));
+            this.waypoint = new Waypoint(new AprilTagPoint(0,  new Pose2d(0,0, new Rotation2d())));
         }
     }
 }

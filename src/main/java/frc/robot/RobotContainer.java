@@ -238,7 +238,7 @@ public class RobotContainer {
         .whileTrue(new GroundIntakeCommand(intake, indexer, pivot));
 
     operatorController.rightBumper()
-        .whileTrue(new GroundOutakeCommand(intake, indexer, pivot));
+        .whileTrue(new GroundOutakeCommand(intake, indexer, pivot));  
   }
 
   public Command getAutonomousCommand() {

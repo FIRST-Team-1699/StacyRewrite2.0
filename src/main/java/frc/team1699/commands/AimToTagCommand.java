@@ -61,6 +61,7 @@ public class AimToTagCommand extends Command {
     @Override
     public void end(boolean isInterupted) {
         RobotContainer.rotationalAlignOutput=0;
+        vision.disableStickyCam();
         if(isInterupted) {
             return;
         }

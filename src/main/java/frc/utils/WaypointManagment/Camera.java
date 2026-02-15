@@ -9,6 +9,8 @@ import org.photonvision.targeting.PhotonTrackedTarget;
 import frc.team1699.subsystems.VisionSubsystem;
 
 public class Camera {
+    public boolean enabled;
+
     private PhotonCamera cam;
     private List<PhotonPipelineResult> results;
     private PhotonTrackedTarget currentTag;
@@ -23,6 +25,7 @@ public class Camera {
         this.xOffset = offsets[0];
         this.yOffset = offsets[1];
         this.yawOffset = offsets[2];
+        this.enabled=false;
 
         this.setPipelineIndex(1);
     }

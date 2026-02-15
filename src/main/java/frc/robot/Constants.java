@@ -9,6 +9,8 @@ import org.photonvision.PhotonCamera;
 import com.pathplanner.lib.config.PIDConstants;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 
+import edu.wpi.first.apriltag.AprilTagFieldLayout;
+import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.math.interpolation.InterpolatingDoubleTreeMap;
 import edu.wpi.first.math.util.Units;
 
@@ -114,16 +116,19 @@ public final class Constants {
     public static final String kCamTwoName = "Cool_Cam2";
 
     public static final double cam1XOffset = 0.0;
-    public static final double cam1YOffset = 0.23;
+    public static final double cam1YOffset = 0.14;
     public static final double cam1YawOffset = 0.0;
 
     public static final double cam2XOffset = 0;
-    public static final double cam2YOffset = -0.39;
+    public static final double cam2YOffset = -0.38;
     // public static final double cam2YawOffset = 15.0;
     public static final double cam2YawOffset = -25.0;
 
     public static final double ambiguityTolerance=0.40;
+    public static final double kPositionTolerance=0.4;
     // public static InterpolatingDoubleTreeMap score =new InterpolatingDoubleTreeMap();
+    public static final AprilTagFieldLayout kTagLayout =
+      AprilTagFieldLayout.loadField(AprilTagFields.kDefaultField);
 
   }
 }

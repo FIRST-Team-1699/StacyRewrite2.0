@@ -2,17 +2,19 @@ package frc.utils.WaypointManagment;
 
 import java.util.HashMap;
 
+import edu.wpi.first.math.geometry.Pose2d;
+
 /** Describes a target for bot angular or positional management
  *  for vision. For example, the Hub is a waypoint.
  */
 public class Waypoint {
-    private HashMap<Integer,double[]> targetOffsetMap = new HashMap<>();
-    private double yawOffset;
+    private HashMap<Integer,Pose2d> targetOffsetMap = new HashMap<>();
+    // private double yawOffset;
     /** Uses targetOffsetMap to relate any ID to an offset (i.e.: waypoint)
      * @param offset additional offset of yaw of a position
      * @param tags april tags of waypoint
      */
-    public Waypoint(double offset, AprilTagPoint ...tags) {
+    public Waypoint(AprilTagPoint ...tags) {
         for(AprilTagPoint tag : tags) {
             this.targetOffsetMap.put(tag.getID(), tag.getOffset());
         }
@@ -21,7 +23,7 @@ public class Waypoint {
      *  NOT INTENDED FOR A REPLACEMENT OF hasID.
      *  @param id Id of the april tag
      */
-    public double[] getOffset(int id) {
+    public Pose2d getOffset(int id) {
         return this.targetOffsetMap.get(id);
     }
 
@@ -32,7 +34,7 @@ public class Waypoint {
         return this.targetOffsetMap.containsKey(id);
     }
 
-    public double getYawOffset() {
-        return  this.yawOffset;
-    }
+    // public double getYawOffset() {
+    //     return  this.yawOffset;
+    // }
 }

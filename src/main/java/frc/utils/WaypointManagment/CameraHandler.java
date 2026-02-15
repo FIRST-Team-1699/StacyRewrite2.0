@@ -14,12 +14,18 @@ public class CameraHandler {
         this.cams=cams;
     }
 
+    public void disableStickyCam() {
+        for(var cam: cams) {
+            cam.enabled=true;
+        }
+    }
+
     public PhotonTrackedTarget getBestTag() {
         PhotonTrackedTarget bestTag=null;
         for(var cam: cams) {
             cam.setLowestAmbiguity();
             var currentTag=cam.getCurrentTag();
-            if(cam.getCurrentTag()==null) {
+            if(cam.getCurrentTag()==null || !cam.enabled) {
                 continue;
             }
             if(
@@ -30,6 +36,7 @@ public class CameraHandler {
                 VisionSubsystem.currentAmbiguity = currentTag.getPoseAmbiguity();
                 bestTag=currentTag;
                 targetCam=cam;
+                enableStickyCam();
             }
         }
         setOffsets();
@@ -44,6 +51,14 @@ public class CameraHandler {
         if(targetCam!= null) {
             this.xOffset=targetCam.getXOffset();
             this.yOffset=targetCam.getYOffset();
+        }
+    }
+
+    private void enableStickyCam() {
+        for(var cam: cams) {
+            if(cam!=targetCam) {
+                cam.enabled=false;
+            }
         }
     }
 
